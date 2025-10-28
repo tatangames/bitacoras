@@ -6,6 +6,9 @@ use App\Http\Controllers\Controles\ControlController;
 use App\Http\Controllers\Backend\Roles\RolesController;
 use App\Http\Controllers\Backend\Roles\PermisoController;
 use App\Http\Controllers\Backend\Perfil\PerfilController;
+use App\Http\Controllers\Backend\Sistema\SistemaController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +60,21 @@ Route::post('/admin/editar-perfil/actualizar', [PerfilController::class, 'editar
 
 // --- SIN PERMISOS VISTA 403 ---
 Route::get('sin-permisos', [ControlController::class,'indexSinPermiso'])->name('no.permisos.index');
+
+
+Route::get('/admin/operadores/index', [SistemaController::class,'indexOperadores'])->name('admin.operador.index');
+Route::get('/admin/operadores/tabla', [SistemaController::class,'tablaOperadores']);
+Route::post('/admin/operadores/nuevo', [SistemaController::class,'nuevoOperador']);
+Route::post('/admin/operadores/informacion', [SistemaController::class,'infoOperador']);
+Route::post('/admin/operadores/editar', [SistemaController::class,'actualizarOperador']);
+
+
+
+
+
+// ACCESO Y NOVEDADES
+Route::get('/admin/novedades-acceso/index', [SistemaController::class,'indexBitacoraNovedadesAcceso'])->name('admin.acceso.novedades.index');
+
 
 
 
