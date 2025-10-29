@@ -50,10 +50,34 @@
 
 
                 <li class="nav-item">
-                    <a href="{{ route('admin.acceso.novedades.index') }}" target="frameprincipal" class="nav-link">
+                    <a href="{{ route('admin.registro.novedades.acceso') }}" target="frameprincipal" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Acceso y Novedades</p>
                     </a>
+                </li>
+
+
+
+                <li class="nav-item">
+
+                    <a href="#" class="nav-link nav-">
+                        <i class="far fa-edit"></i>
+                        <p>
+                            Lista Bitacoras
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.bitacora.acceso.novedades') }}" target="frameprincipal" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Acceso y Novedades</p>
+                            </a>
+                        </li>
+
+
+                    </ul>
                 </li>
 
 

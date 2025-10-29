@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\Roles\RolesController;
 use App\Http\Controllers\Backend\Roles\PermisoController;
 use App\Http\Controllers\Backend\Perfil\PerfilController;
 use App\Http\Controllers\Backend\Sistema\SistemaController;
+use App\Http\Controllers\Backend\Sistema\BitacorasController;
 
 
 
@@ -73,10 +74,12 @@ Route::post('/admin/operadores/editar', [SistemaController::class,'actualizarOpe
 
 
 // ACCESO Y NOVEDADES
-Route::get('/admin/novedades-acceso/index', [SistemaController::class,'indexBitacoraNovedadesAcceso'])->name('admin.acceso.novedades.index');
+Route::get('/admin/registro/novedades-acceso/index', [BitacorasController::class,'registroNovedadesAcceso'])->name('admin.registro.novedades.acceso');
+Route::post('/admin/bitacora-novedades/registro', [BitacorasController::class,'guardarNovedadesAcceso']);
 
 
-
+Route::get('/admin/bitacora/lista/noveadesacceso/index', [BitacorasController::class,'indexBitacoraNovedadesAcceso'])->name('admin.bitacora.acceso.novedades');
+Route::get('/admin/bitacora/lista/noveadesacceso/tabla', [BitacorasController::class,'tablaBitacoraNovedadesAcceso']);
 
 
 
