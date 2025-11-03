@@ -92,8 +92,14 @@ Route::post('/admin/bitacora/noveadesacceso/actualizar', [BitacorasController::c
 
 // MANTENIMIENTO
 
-Route::get('/admin/bitacora/lista/mantenimiento/index', [BitacorasController::class,'indexBitacoraMantenimiento'])->name('admin.bitacora.mantenimiento');
+Route::get('/admin/registro/mantenimiento/index', [BitacorasController::class,'registroBitacoraMantenimiento'])->name('admin.registro.mantenimiento');
+Route::post('/admin/bitacora-mantenimiento/registro', [BitacorasController::class,'guardarMantenimiento']);
+
+// vista para ver todos
+Route::get('/admin/bitacora/lista/mantenimiento/index', [BitacorasController::class,'indexBitacoraMantenimiento'])->name('admin.bitacora.mantenimientos');
 Route::get('/admin/bitacora/lista/mantenimiento/tabla', [BitacorasController::class,'tablaBitacoraMantenimiento']);
+Route::post('/admin/bitacora/mantenimiento/informacion', [BitacorasController::class,'informacionMantenimiento']);
+Route::post('/admin/bitacora/mantenimiento/actualizar', [BitacorasController::class,'actualizarMantenimiento']);
 
 
 

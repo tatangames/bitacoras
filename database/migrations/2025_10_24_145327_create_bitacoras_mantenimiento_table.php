@@ -19,7 +19,7 @@ return new class extends Migration
 
             // hora y fecha del guardado
             $table->datetime('fecha_registro'); // esto cuando guarda el registro
-            $table->datetime('fecha');
+            $table->date('fecha');
 
             $table->text('equipo')->nullable();
             $table->text('tipo_mantenimiento')->nullable();

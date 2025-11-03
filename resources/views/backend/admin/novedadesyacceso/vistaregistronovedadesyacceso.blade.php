@@ -28,13 +28,13 @@
                             <div class="card-body">
 
                                 <div class="form-group" style="width: 30%">
-                                    <label>Fecha y hora</label>
+                                    <label>Fecha y hora <span style="color: red">*</span></label>
                                     <input type="datetime-local" class="form-control" id="fechahora-nuevo" value="{{ $fechaHora }}">
                                 </div>
 
 
                                 <div class="form-group">
-                                    <label>Operador:</label>
+                                    <label>Operador: <span style="color: red">*</span></label>
                                     <br>
                                     <select width="100%" class="form-control" id="select-operador">
                                         @foreach($arrayOperador as $item)
@@ -44,7 +44,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Tipo de Acceso:</label>
+                                    <label>Tipo de Acceso: <span style="color: red">*</span></label>
                                     <br>
                                     <select width="100%" class="form-control" id="select-acceso">
                                         @foreach($arrayTipoAcceso as $item)

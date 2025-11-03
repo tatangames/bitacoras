@@ -56,7 +56,12 @@
                     </a>
                 </li>
 
-
+                <li class="nav-item">
+                    <a href="{{ route('admin.registro.mantenimiento') }}" target="frameprincipal" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Mantenimiento</p>
+                    </a>
+                </li>
 
                 <li class="nav-item">
 
@@ -73,6 +78,13 @@
                             <a href="{{ route('admin.bitacora.acceso.novedades') }}" target="frameprincipal" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Acceso y Novedades</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.bitacora.mantenimientos') }}" target="frameprincipal" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Mantenimientos</p>
                             </a>
                         </li>
 

@@ -176,10 +176,59 @@ class BitacorasController extends Controller
 
 
     // ============ BITACORA DE MANTENIMIENTO  ===================
+    public function registroBitacoraMantenimiento()
+    {
+        $arrayOperador = Operador::orderBy('nombre', 'ASC')->get();
+        $fechaHora = Carbon::now('America/El_Salvador')->format('Y-m-d');
+
+        return view('backend.admin.mantenimiento.vistaregistromantenimiento', compact('arrayOperador', 'fechaHora'));
+    }
+
+    public function guardarMantenimiento(Request $request)
+    {
+        $regla = array(
+            'fecha' => 'required',
+            'operador' => 'required',
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+        DB::beginTransaction();
+
+        try {
+
+            $userId  = auth()->id();
+            $fechaActual = Carbon::now('America/El_Salvador');
+
+            $dato = new BitacorasMantenimiento();
+            $dato->id_operador = $request->operador;
+            $dato->id_usuario = $userId;
+            $dato->fecha = $request->fecha;
+            $dato->fecha_registro = $fechaActual;
+            $dato->equipo = $request->equipo;
+            $dato->tipo_mantenimiento = $request->mantenimiento;
+            $dato->descripcion = $request->descripcion;
+            $dato->proximo_mantenimiento = $request->proximo;
+            $dato->observaciones = $request->observacion;
+            $dato->save();
+
+            DB::commit();
+            return ['success' => 1];
+        } catch (\Throwable $e) {
+            Log::info('error ' . $e);
+            DB::rollback();
+            return ['success' => 99];
+        }
+    }
+
+
+
     public function indexBitacoraMantenimiento()
     {
-        return "edee";
-        return view('backend.admin.novedadesyacceso.todos.vistanovedadesyacceso');
+        return view('backend.admin.mantenimiento.todos.vistamantenimiento');
     }
 
     public function tablaBitacoraMantenimiento()
@@ -188,13 +237,98 @@ class BitacorasController extends Controller
             ->map(function ($item) {
 
                 // Crear campo formateado
-                $item->fechaFormat = Carbon::parse($item->fecha)->format('d/m/Y h:i A');
+                $item->fechaFormat = Carbon::parse($item->fecha)->format('d/m/Y');
+
+                $fechaProximo = "";
+                if($item->proximo_mantenimiento != null){
+                    $fechaProximo = Carbon::parse($item->proximo_mantenimiento)->format('d/m/Y');
+                }
+                $item->fechaProximo = $fechaProximo;
+
+                $infoOperador = Operador::where('id', $item->id_operador)->first();
+
+                $item->nombreOperador = $infoOperador->nombre;
 
                 return $item;
             });
 
-        return view('backend.admin.mantenimiento.vistaregistromantenimiento', compact('arrayBitacoraMantenimiento'));
+        return view('backend.admin.mantenimiento.todos.tablamantenimiento', compact('arrayBitacoraMantenimiento'));
     }
+
+
+    public function informacionMantenimiento(Request $request)
+    {
+        $regla = array(
+            'id' => 'required'
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+
+        $info = BitacorasMantenimiento::where('id', $request->id)->first();
+
+        $arrayOperador = Operador::orderBy('nombre', 'ASC')->get();
+
+        return ['success' => 1, 'info' => $info, 'arrayOperador' => $arrayOperador];
+    }
+
+
+    public function actualizarMantenimiento(Request $request)
+    {
+        $regla = array(
+            'id' => 'required',
+            'fecha' => 'required',
+            'operador' => 'required',
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+        DB::beginTransaction();
+
+        try {
+
+            BitacorasMantenimiento::where('id', $request->id)->update([
+                'id_operador' => $request->operador,
+                'fecha' => $request->fecha,
+                'equipo' => $request->equipo,
+                'tipo_mantenimiento' => $request->mantenimiento,
+                'descripcion' => $request->descripcion,
+                'proximo_mantenimiento' => $request->proximo,
+                'observaciones' => $request->observacion
+            ]);
+
+            DB::commit();
+            return ['success' => 1];
+        } catch (\Throwable $e) {
+            Log::info('error ' . $e);
+            DB::rollback();
+            return ['success' => 99];
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
