@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Sistema;
 
 use App\Http\Controllers\Controller;
 use App\Models\Operador;
+use App\Models\Unidad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -92,6 +93,89 @@ class SistemaController extends Controller
         return ['success' => 1];
     }
 
+
+
+
+    //********************* UNIDAD ***************************************
+
+
+
+    public function indexUnidad()
+    {
+        return view('backend.admin.configuracion.unidad.vistaunidad');
+    }
+
+    public function tablaUnidad()
+    {
+        $arrayUnidad = Unidad::orderBy('nombre', 'ASC')->get();
+
+        return view('backend.admin.configuracion.unidad.tablaunidad', compact('arrayUnidad'));
+    }
+
+
+    public function nuevoUnidad(Request $request)
+    {
+        $regla = array(
+            'nombre' => 'required'
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+        DB::beginTransaction();
+
+        try {
+            $dato = new Unidad();
+            $dato->nombre = $request->nombre;
+            $dato->save();
+
+            DB::commit();
+            return ['success' => 1];
+        } catch (\Throwable $e) {
+            Log::info('error ' . $e);
+            DB::rollback();
+            return ['success' => 99];
+        }
+    }
+
+    public function infoUnidad(Request $request)
+    {
+        $regla = array(
+            'id' => 'required'
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+
+        $info = Unidad::where('id', $request->id)->first();
+
+        return ['success' => 1, 'info' => $info];
+    }
+
+    public function actualizarUnidad(Request $request)
+    {
+        $regla = array(
+            'id' => 'required',
+            'nombre' => 'required'
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+
+        Unidad::where('id', $request->id)->update([
+            'nombre' => $request->nombre
+        ]);
+
+        return ['success' => 1];
+    }
 
 
 

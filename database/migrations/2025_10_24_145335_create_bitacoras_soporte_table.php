@@ -13,7 +13,18 @@ return new class extends Migration
     {
         Schema::create('bitacoras_soporte', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+
+            $table->foreignId('id_operador')->constrained('operadores');
+            $table->foreignId('id_unidad')->constrained('unidad');
+            $table->foreignId('id_usuario')->constrained('usuarios');
+
+            // hora y fecha del guardado
+            $table->datetime('fecha_registro'); // esto cuando guarda el registro
+            $table->date('fecha');
+            $table->text('descripcion')->nullable();
+            $table->text('solucion')->nullable();
+            $table->text('estado')->nullable();
+            $table->text('observaciones')->nullable();
         });
     }
 

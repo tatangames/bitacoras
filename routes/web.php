@@ -62,15 +62,19 @@ Route::post('/admin/editar-perfil/actualizar', [PerfilController::class, 'editar
 // --- SIN PERMISOS VISTA 403 ---
 Route::get('sin-permisos', [ControlController::class,'indexSinPermiso'])->name('no.permisos.index');
 
-
+// === OPERADORES / TECNICOS ====
 Route::get('/admin/operadores/index', [SistemaController::class,'indexOperadores'])->name('admin.operador.index');
 Route::get('/admin/operadores/tabla', [SistemaController::class,'tablaOperadores']);
 Route::post('/admin/operadores/nuevo', [SistemaController::class,'nuevoOperador']);
 Route::post('/admin/operadores/informacion', [SistemaController::class,'infoOperador']);
 Route::post('/admin/operadores/editar', [SistemaController::class,'actualizarOperador']);
 
-
-
+//  === UNIDAD ===
+Route::get('/admin/unidad/index', [SistemaController::class,'indexUnidad'])->name('admin.unidad.index');
+Route::get('/admin/unidad/tabla', [SistemaController::class,'tablaUnidad']);
+Route::post('/admin/unidad/nuevo', [SistemaController::class,'nuevoUnidad']);
+Route::post('/admin/unidad/informacion', [SistemaController::class,'infoUnidad']);
+Route::post('/admin/unidad/editar', [SistemaController::class,'actualizarUnidad']);
 
 
 // ACCESO Y NOVEDADES
@@ -86,10 +90,6 @@ Route::post('/admin/bitacora/noveadesacceso/informacion', [BitacorasController::
 Route::post('/admin/bitacora/noveadesacceso/actualizar', [BitacorasController::class,'actualizarNovedadesAcceso']);
 
 
-
-
-
-
 // MANTENIMIENTO
 
 Route::get('/admin/registro/mantenimiento/index', [BitacorasController::class,'registroBitacoraMantenimiento'])->name('admin.registro.mantenimiento');
@@ -102,10 +102,16 @@ Route::post('/admin/bitacora/mantenimiento/informacion', [BitacorasController::c
 Route::post('/admin/bitacora/mantenimiento/actualizar', [BitacorasController::class,'actualizarMantenimiento']);
 
 
+// SOPORTE
 
+Route::get('/admin/registro/soporte/index', [BitacorasController::class,'registroBitacoraSoporte'])->name('admin.registro.soporte');
+Route::post('/admin/bitacora-soporte/registro', [BitacorasController::class,'guardarSoporte']);
 
-
-
+// vista para ver todos
+Route::get('/admin/bitacora/lista/soporte/index', [BitacorasController::class,'indexBitacoraSoporte'])->name('admin.bitacora.soporte');
+Route::get('/admin/bitacora/lista/soporte/tabla', [BitacorasController::class,'tablaBitacoraSoporte']);
+Route::post('/admin/bitacora/soporte/informacion', [BitacorasController::class,'informacionSoporte']);
+Route::post('/admin/bitacora/soporte/actualizar', [BitacorasController::class,'actualizarSoporte']);
 
 
 

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('bitacoras_mantenimiento', function (Blueprint $table) {
             $table->id();
 
-            $table->bigInteger('id_operador')->unsigned();
-            $table->bigInteger('id_usuario')->unsigned();
+            $table->foreignId('id_operador')->constrained('operadores');
+            $table->foreignId('id_usuario')->constrained('usuarios');
 
             // hora y fecha del guardado
             $table->datetime('fecha_registro'); // esto cuando guarda el registro
@@ -27,8 +27,6 @@ return new class extends Migration
             $table->date('proximo_mantenimiento')->nullable();
             $table->text('observaciones')->nullable();
 
-            $table->foreign('id_operador')->references('id')->on('operadores');
-            $table->foreign('id_usuario')->references('id')->on('operadores');
         });
     }
 

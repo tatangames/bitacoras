@@ -48,6 +48,13 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ route('admin.unidad.index') }}" target="frameprincipal" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Unidad</p>
+                    </a>
+                </li>
+
 
                 <li class="nav-item">
                     <a href="{{ route('admin.registro.novedades.acceso') }}" target="frameprincipal" class="nav-link">
@@ -62,6 +69,14 @@
                         <p>Mantenimiento</p>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.registro.soporte') }}" target="frameprincipal" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Soporte</p>
+                    </a>
+                </li>
+
 
                 <li class="nav-item">
 
@@ -88,6 +103,12 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a href="{{ route('admin.bitacora.soporte') }}" target="frameprincipal" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Soporte</p>
+                            </a>
+                        </li>
 
                     </ul>
                 </li>

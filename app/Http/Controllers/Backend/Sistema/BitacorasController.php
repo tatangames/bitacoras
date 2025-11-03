@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Backend\Sistema;
 use App\Http\Controllers\Controller;
 use App\Models\BitacorasAcceso;
 use App\Models\BitacorasMantenimiento;
+use App\Models\BitacorasSoporte;
 use App\Models\Operador;
 use App\Models\TipoAcceso;
+use App\Models\Unidad;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -317,10 +319,147 @@ class BitacorasController extends Controller
 
 
 
+    // ============ BITACORA DE SOPORTE  ===================
+    public function registroBitacoraSoporte()
+    {
+        $arrayOperador = Operador::orderBy('nombre', 'ASC')->get();
+        $arrayUnidad = Unidad::orderBy('nombre', 'ASC')->get();
+        $fechaHora = Carbon::now('America/El_Salvador')->format('Y-m-d');
+
+        return view('backend.admin.soporte.vistaregistrosoporte', compact('arrayOperador', 'fechaHora', 'arrayUnidad'));
+    }
+
+    public function guardarSoporte(Request $request)
+    {
+        $regla = array(
+            'fecha' => 'required',
+            'operador' => 'required',
+            'unidad' => 'required',
+        );
+
+        Log::info($request->all());
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+        DB::beginTransaction();
+
+        try {
+
+            $userId  = auth()->id();
+            $fechaActual = Carbon::now('America/El_Salvador');
+
+            $dato = new BitacorasSoporte();
+            $dato->id_operador = $request->operador;
+            $dato->id_unidad = $request->unidad;
+            $dato->id_usuario = $userId;
+            $dato->fecha = $request->fecha;
+            $dato->fecha_registro = $fechaActual;
+            $dato->solucion = $request->solucion;
+            $dato->estado = $request->estado;
+            $dato->descripcion = $request->descripcion;
+            $dato->observaciones = $request->observacion;
+            $dato->save();
+
+            DB::commit();
+            return ['success' => 1];
+        } catch (\Throwable $e) {
+            Log::info('error ' . $e);
+            DB::rollback();
+            return ['success' => 99];
+        }
+    }
 
 
 
 
+    public function indexBitacoraSoporte()
+    {
+        return view('backend.admin.soporte.todos.vistasoporte');
+    }
+
+    public function tablaBitacoraSoporte()
+    {
+        $arrayBitacoraSoporte = BitacorasSoporte::orderBy('fecha', 'ASC')->get()
+            ->map(function ($item) {
+
+                // Crear campo formateado
+                $item->fechaFormat = Carbon::parse($item->fecha)->format('d/m/Y');
+
+
+                $infoOperador = Operador::where('id', $item->id_operador)->first();
+                $infoUnidad = Unidad::where('id', $item->id_unidad)->first();
+
+                $item->nombreOperador = $infoOperador->nombre;
+                $item->nombreUnidad = $infoUnidad->nombre;
+
+                return $item;
+            });
+
+        return view('backend.admin.soporte.todos.tablasoporte', compact('arrayBitacoraSoporte'));
+    }
+
+
+    public function informacionSoporte(Request $request)
+    {
+        $regla = array(
+            'id' => 'required'
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+
+        $info = BitacorasSoporte::where('id', $request->id)->first();
+
+        $arrayOperador = Operador::orderBy('nombre', 'ASC')->get();
+        $arrayUnidad = Unidad::orderBy('nombre', 'ASC')->get();
+
+        return ['success' => 1, 'info' => $info, 'arrayOperador' => $arrayOperador,
+            'arrayUnidad' => $arrayUnidad];
+    }
+
+
+    public function actualizarSoporte(Request $request)
+    {
+        $regla = array(
+            'id' => 'required',
+            'fecha' => 'required',
+            'operador' => 'required',
+            'unidad' => 'required',
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+        DB::beginTransaction();
+
+        try {
+
+            BitacorasSoporte::where('id', $request->id)->update([
+                'id_operador' => $request->operador,
+                'id_unidad' => $request->unidad,
+                'fecha' => $request->fecha,
+                'descripcion' => $request->descripcion,
+                'solucion' => $request->solucion,
+                'estado' => $request->estado,
+                'observaciones' => $request->observacion
+            ]);
+
+            DB::commit();
+            return ['success' => 1];
+        } catch (\Throwable $e) {
+            Log::info('error ' . $e);
+            DB::rollback();
+            return ['success' => 99];
+        }
+    }
 
 
 
