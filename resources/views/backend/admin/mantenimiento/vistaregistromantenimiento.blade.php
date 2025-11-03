@@ -22,7 +22,7 @@
                 <div class="col-md-6">
                     <div class="card card-gray-dark">
                         <div class="card-header">
-                            <h3 class="card-title">Novedades y Acceso</h3>
+                            <h3 class="card-title">Mantenimiento</h3>
                         </div>
                         <form id="form-nuevo">
                             <div class="card-body">
@@ -47,9 +47,8 @@
                                     <label>Tipo de Acceso:</label>
                                     <br>
                                     <select width="100%" class="form-control" id="select-acceso">
-                                        @foreach($arrayTipoAcceso as $item)
-                                            <option value="{{ $item->id }}">{{ $item->nombre }}</option>
-                                        @endforeach
+                                        <option value="0">Salida</option>
+                                        <option value="1">Entrada</option>
                                     </select>
                                 </div>
 
@@ -141,6 +140,7 @@
             formData.append('novedades', novedades);
             formData.append('equipo', equipo);
             formData.append('observacion', observacion);
+
 
             axios.post(url + '/bitacora-novedades/registro', formData)
                 .then((response) => {

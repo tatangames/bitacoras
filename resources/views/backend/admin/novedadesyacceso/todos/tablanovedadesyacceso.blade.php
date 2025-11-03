@@ -8,6 +8,11 @@
                             <thead>
                             <tr>
                                 <th  style="width: 12%">Fecha</th>
+                                <th  style="width: 12%">Operador</th>
+                                <th  style="width: 12%">Tipo Acceso</th>
+                                <th  style="width: 12%">Novedad</th>
+                                <th  style="width: 12%">Equipo</th>
+                                <th  style="width: 12%">Observaciones</th>
                                 <th  style="width: 8%">Opciones</th>
                             </tr>
                             </thead>
@@ -19,6 +24,22 @@
                                     <td data-order="{{ strtotime($dato->fecha) }}">
                                         {{ $dato->fechaFormat }}
                                     </td>
+                                    <td>
+                                        {{ $dato->nombreOperador }}
+                                    </td>
+                                    <td>
+                                        {{ $dato->nombreAcceso }}
+                                    </td>
+                                    <td>
+                                        {{ $dato->novedad }}
+                                    </td>
+                                    <td>
+                                        {{ $dato->equipo_involucrado }}
+                                    </td>
+                                    <td>
+                                        {{ $dato->observaciones }}
+                                    </td>
+
                                     <td>
                                         <button type="button" style="font-weight: bold; color: white !important;"
                                                 class="button button-primary button-rounded button-pill button-small"

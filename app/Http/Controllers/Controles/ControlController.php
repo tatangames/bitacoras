@@ -20,6 +20,9 @@ class ControlController extends Controller
         if($user->hasRole('admin')){
             $ruta = 'admin.roles.index';
         }
+        else if($user->hasRole('usuario')){
+            $ruta = 'admin.registro.novedades.acceso';
+        }
         else{
             // no tiene ningun permiso de vista, redirigir a pantalla sin permisos
             $ruta = 'no.permisos.index';

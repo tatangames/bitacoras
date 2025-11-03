@@ -13,7 +13,22 @@ return new class extends Migration
     {
         Schema::create('bitacoras_mantenimiento', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+
+            $table->bigInteger('id_operador')->unsigned();
+            $table->bigInteger('id_usuario')->unsigned();
+
+            // hora y fecha del guardado
+            $table->datetime('fecha_registro'); // esto cuando guarda el registro
+            $table->datetime('fecha');
+
+            $table->text('equipo')->nullable();
+            $table->text('tipo_mantenimiento')->nullable();
+            $table->text('descripcion')->nullable();
+            $table->date('proximo_mantenimiento')->nullable();
+            $table->text('observaciones')->nullable();
+
+            $table->foreign('id_operador')->references('id')->on('operadores');
+            $table->foreign('id_usuario')->references('id')->on('operadores');
         });
     }
 

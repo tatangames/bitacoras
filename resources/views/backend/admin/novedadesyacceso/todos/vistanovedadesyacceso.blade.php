@@ -19,9 +19,7 @@
     <section class="content-header">
         <div class="row mb-2">
             <div class="col-sm-6">
-
             </div>
-
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">Bitacoras</li>
@@ -53,7 +51,7 @@
 
     <!-- modal editar -->
     <div class="modal fade" id="modalEditar">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Editar Registro</h4>
@@ -71,10 +69,42 @@
                                         <input type="hidden" id="id-editar">
                                     </div>
 
-                                    <div class="form-group">
-                                        <label>Nombre</label>
-                                        <input type="text" maxlength="100" class="form-control" id="nombre-editar" autocomplete="off">
+                                    <div class="form-group" style="width: 30%">
+                                        <label>Fecha y hora</label>
+                                        <input type="datetime-local" class="form-control" id="fechahora-nuevo" value="">
                                     </div>
+
+
+                                    <div class="form-group">
+                                        <label>Operador:</label>
+                                        <br>
+                                        <select width="100%" class="form-control" id="select-operador">
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Tipo de Acceso:</label>
+                                        <br>
+                                        <select width="100%" class="form-control" id="select-acceso">
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Novedades</label>
+                                        <input type="text" class="form-control" id="novedades-nuevo" placeholder="Novedades">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Equipo involucrado</label>
+                                        <input type="text" class="form-control" id="equipo-nuevo" placeholder="Equipo involucrado">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Observaciones</label>
+                                        <input type="text" class="form-control" id="observacion-nuevo" placeholder="Observaciones">
+                                    </div>
+
+
 
                                 </div>
                             </div>
@@ -83,7 +113,7 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                    <button type="button" style="font-weight: bold; background-color: #28a745; color: white !important;" class="button button-rounded button-pill button-small" onclick="editar()">Actualizar</button>
+                    <button type="button" style="font-weight: bold; background-color: #28a745; color: white !important;" id="btn-guardar" class="button button-rounded button-pill button-small" onclick="editar()">Actualizar</button>
                 </div>
             </div>
         </div>
@@ -124,42 +154,12 @@
             $('#modalAgregar').modal('show');
         }
 
-        function nuevo(){
-            var nombre = document.getElementById('nombre-nuevo').value;
-
-            if(nombre === ''){
-                toastr.error('Nombre es requerido');
-                return;
-            }
-
-            openLoading();
-            var formData = new FormData();
-            formData.append('nombre', nombre);
-
-            axios.post(url+'/operadores/nuevo', formData, {
-            })
-                .then((response) => {
-                    closeLoading();
-                    if(response.data.success === 1){
-                        toastr.success('Registrado correctamente');
-                        $('#modalAgregar').modal('hide');
-                        recargar();
-                    }
-                    else {
-                        toastr.error('Error al registrar');
-                    }
-                })
-                .catch((error) => {
-                    toastr.error('Error al registrar');
-                    closeLoading();
-                });
-        }
 
         function informacion(id){
             openLoading();
             document.getElementById("formulario-editar").reset();
 
-            axios.post(url+'/operadores/informacion',{
+            axios.post(url+'/bitacora/noveadesacceso/informacion',{
                 'id': id
             })
                 .then((response) => {
@@ -167,7 +167,30 @@
                     if(response.data.success === 1){
                         $('#modalEditar').modal('show');
                         $('#id-editar').val(id);
-                        $('#nombre-editar').val(response.data.info.nombre);
+                        $('#fechahora-nuevo').val(response.data.info.fecha);
+
+                        $('#novedades-nuevo').val(response.data.info.novedad);
+                        $('#equipo-nuevo').val(response.data.info.equipo_involucrado);
+                        $('#observacion-nuevo').val(response.data.info.observaciones);
+
+                        document.getElementById("select-operador").options.length = 0;
+                        document.getElementById("select-acceso").options.length = 0;
+
+                        $.each(response.data.arrayOperador, function( key, val ){
+                            if(response.data.info.id_operador == val.id){
+                                $('#select-operador').append('<option value="' +val.id +'" selected="selected">'+ val.nombre +'</option>');
+                            }else{
+                                $('#select-operador').append('<option value="' +val.id +'">'+ val.nombre +'</option>');
+                            }
+                        });
+
+                        $.each(response.data.arrayTipoAcceso, function( key, val ){
+                            if(response.data.info.id_acceso == val.id){
+                                $('#select-acceso').append('<option value="' +val.id +'" selected="selected">'+ val.nombre +'</option>');
+                            }else{
+                                $('#select-acceso').append('<option value="' +val.id +'">'+ val.nombre +'</option>');
+                            }
+                        });
 
                     }else{
                         toastr.error('Información no encontrada');
@@ -181,37 +204,73 @@
 
         function editar(){
             var id = document.getElementById('id-editar').value;
-            var nombre = document.getElementById('nombre-editar').value;
 
-            if(nombre === ''){
-                toastr.error('Nombre es requerido');
+            var fecha = document.getElementById('fechahora-nuevo').value;
+            var selectOperador = document.getElementById('select-operador').value;
+            var selectAcceso = document.getElementById('select-acceso').value;
+
+            var novedades = document.getElementById('novedades-nuevo').value;
+            var equipo = document.getElementById('equipo-nuevo').value;
+            var observacion = document.getElementById('observacion-nuevo').value;
+
+            if(fecha === ''){
+                toastr.error('Fecha y Hora es requerida');
                 return;
             }
+
+            if(selectOperador === ''){
+                toastr.error('Operador es requerida');
+                return;
+            }
+
+            if(selectAcceso === ''){
+                toastr.error('Acceso es requerida');
+                return;
+            }
+
+            const btnGuardar = document.getElementById('btn-guardar');
+
+            // Desactivar botón al iniciar
+            btnGuardar.disabled = true;
+            btnGuardar.textContent = 'Guardando...';
+
 
             openLoading();
             var formData = new FormData();
             formData.append('id', id);
-            formData.append('nombre', nombre);
+            formData.append('fecha', fecha);
+            formData.append('operador', selectOperador);
+            formData.append('acceso', selectAcceso);
+            formData.append('novedades', novedades);
+            formData.append('equipo', equipo);
+            formData.append('observacion', observacion);
 
-            axios.post(url+'/operadores/editar', formData, {
-            })
+            axios.post(url + '/bitacora/noveadesacceso/actualizar', formData)
                 .then((response) => {
                     closeLoading();
-
-                    if(response.data.success === 1){
+                    if (response.data.success === 1) {
                         toastr.success('Actualizado correctamente');
                         $('#modalEditar').modal('hide');
                         recargar();
+                    } else {
+                        toastr.error('Error al registrar');
                     }
-                    else {
-                        toastr.error('Error al actualizar');
-                    }
-
                 })
                 .catch((error) => {
-                    toastr.error('Error al actualizar');
+                    toastr.error('Error al registrar');
                     closeLoading();
+                })
+                .finally(() => {
+                    // Reactivar botón al finalizar
+                    resetButton();
                 });
+
+            // Función interna para restaurar el botón
+            function resetButton() {
+                btnGuardar.disabled = false;
+                btnGuardar.textContent = 'Guardar';
+            }
+
         }
 
 

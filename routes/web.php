@@ -74,14 +74,26 @@ Route::post('/admin/operadores/editar', [SistemaController::class,'actualizarOpe
 
 
 // ACCESO Y NOVEDADES
+// vista para registrar uno nuevo
 Route::get('/admin/registro/novedades-acceso/index', [BitacorasController::class,'registroNovedadesAcceso'])->name('admin.registro.novedades.acceso');
+// guardar registro
 Route::post('/admin/bitacora-novedades/registro', [BitacorasController::class,'guardarNovedadesAcceso']);
 
-
+// vista para ver todos
 Route::get('/admin/bitacora/lista/noveadesacceso/index', [BitacorasController::class,'indexBitacoraNovedadesAcceso'])->name('admin.bitacora.acceso.novedades');
 Route::get('/admin/bitacora/lista/noveadesacceso/tabla', [BitacorasController::class,'tablaBitacoraNovedadesAcceso']);
+Route::post('/admin/bitacora/noveadesacceso/informacion', [BitacorasController::class,'informacionNovedadesAcceso']);
+Route::post('/admin/bitacora/noveadesacceso/actualizar', [BitacorasController::class,'actualizarNovedadesAcceso']);
 
 
+
+
+
+
+// MANTENIMIENTO
+
+Route::get('/admin/bitacora/lista/mantenimiento/index', [BitacorasController::class,'indexBitacoraMantenimiento'])->name('admin.bitacora.mantenimiento');
+Route::get('/admin/bitacora/lista/mantenimiento/tabla', [BitacorasController::class,'tablaBitacoraMantenimiento']);
 
 
 

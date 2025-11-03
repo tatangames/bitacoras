@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Backend\Sistema;
 
 use App\Http\Controllers\Controller;
 use App\Models\BitacorasAcceso;
+use App\Models\BitacorasMantenimiento;
 use App\Models\Operador;
+use App\Models\TipoAcceso;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,8 +23,12 @@ class BitacorasController extends Controller
     public function registroNovedadesAcceso()
     {
         $arrayOperador = Operador::orderBy('nombre', 'ASC')->get();
+        $arrayTipoAcceso = TipoAcceso::orderBy('id', 'ASC')->get();
 
-        return view('backend.admin.novedadesyacceso.vistaregistronovedadesyacceso', compact('arrayOperador'));
+        $fechaHora = Carbon::now('America/El_Salvador')->format('Y-m-d\TH:i');
+
+        return view('backend.admin.novedadesyacceso.vistaregistronovedadesyacceso', compact('arrayOperador', 'fechaHora',
+        'arrayTipoAcceso'));
     }
 
     public function guardarNovedadesAcceso(Request $request)
@@ -50,7 +56,7 @@ class BitacorasController extends Controller
             $dato->id_usuario = $userId;
             $dato->fecha = $request->fecha;
             $dato->fecha_registro = $fechaActual;
-            $dato->tipo_acceso = $request->acceso;
+            $dato->id_acceso = $request->acceso;
             $dato->novedad = $request->novedades;
             $dato->equipo_involucrado = $request->equipo;
             $dato->observaciones = $request->observacion;
@@ -66,11 +72,11 @@ class BitacorasController extends Controller
     }
 
 
+    // ============ BITACORA DE NOVEDADES Y ACCESO ===================
     public function indexBitacoraNovedadesAcceso()
     {
         return view('backend.admin.novedadesyacceso.todos.vistanovedadesyacceso');
     }
-
 
     public function tablaBitacoraNovedadesAcceso()
     {
@@ -80,17 +86,115 @@ class BitacorasController extends Controller
             // Crear campo formateado
             $item->fechaFormat = Carbon::parse($item->fecha)->format('d/m/Y h:i A');
 
+            $infoOperador = Operador::where('id', $item->id_operador)->first();
+
+            $item->nombreOperador = $infoOperador->nombre;
+            if($item->tipo_acceso == '1'){
+                $item->nombreAcceso = "Salida";
+            }else{
+                $item->nombreAcceso = "Entrada";
+            }
+
             return $item;
         });
 
-
         return view('backend.admin.novedadesyacceso.todos.tablanovedadesyacceso', compact('arrayBitacoraNovedadesAcceso'));
+    }
+
+
+    public function informacionNovedadesAcceso(Request $request)
+    {
+        $regla = array(
+            'id' => 'required'
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+
+        $info = BitacorasAcceso::where('id', $request->id)->first();
+
+        $arrayOperador = Operador::orderBy('nombre', 'ASC')->get();
+        $arrayTipoAcceso = TipoAcceso::orderBy('id', 'ASC')->get();
+
+        return ['success' => 1, 'info' => $info, 'arrayOperador' => $arrayOperador, 'arrayTipoAcceso' => $arrayTipoAcceso];
+    }
+
+
+    public function actualizarNovedadesAcceso(Request $request)
+    {
+        $regla = array(
+            'id' => 'required',
+            'fecha' => 'required',
+            'operador' => 'required',
+            'acceso' => 'required',
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+        DB::beginTransaction();
+
+        try {
+
+            BitacorasAcceso::where('id', $request->id)->update([
+                'id_operador' => $request->operador,
+                'fecha' => $request->fecha,
+                'id_acceso' => $request->acceso,
+                'novedad' => $request->novedades,
+                'equipo_involucrado' => $request->equipo,
+                'observaciones' => $request->observacion
+            ]);
+
+            DB::commit();
+            return ['success' => 1];
+        } catch (\Throwable $e) {
+            Log::info('error ' . $e);
+            DB::rollback();
+            return ['success' => 99];
+        }
     }
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+    // ============ BITACORA DE MANTENIMIENTO  ===================
+    public function indexBitacoraMantenimiento()
+    {
+        return "edee";
+        return view('backend.admin.novedadesyacceso.todos.vistanovedadesyacceso');
+    }
+
+    public function tablaBitacoraMantenimiento()
+    {
+        $arrayBitacoraMantenimiento = BitacorasMantenimiento::orderBy('fecha', 'ASC')->get()
+            ->map(function ($item) {
+
+                // Crear campo formateado
+                $item->fechaFormat = Carbon::parse($item->fecha)->format('d/m/Y h:i A');
+
+                return $item;
+            });
+
+        return view('backend.admin.mantenimiento.vistaregistromantenimiento', compact('arrayBitacoraMantenimiento'));
+    }
 
 
 
