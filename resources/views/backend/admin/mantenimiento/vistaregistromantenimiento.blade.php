@@ -38,11 +38,6 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Tipo Mantenimiento</label>
-                                    <input type="text" class="form-control" id="tipomantenimiento-nuevo" placeholder="Tipo Mantenimiento">
-                                </div>
-
-                                <div class="form-group">
                                     <label>Tipo Mantenimiento:</label>
                                     <br>
                                     <select width="100%" class="form-control" id="select-mantenimiento">
