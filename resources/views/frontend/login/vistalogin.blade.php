@@ -135,9 +135,9 @@
         formData.append('usuario', usuario);
         formData.append('password', password);
 
-        // bitacorasutil.com/
+        // bitacorasuti.com/
 
-        axios.post('/bitacorasutil.com/admin/login', formData, {
+        axios.post('/bitacorasuti.com/admin/login', formData, {
         })
             .then((response) => {
                 closeLoading();
