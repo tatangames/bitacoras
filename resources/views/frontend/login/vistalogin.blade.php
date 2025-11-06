@@ -137,7 +137,7 @@
 
         // bitacorasuti.com/
 
-        axios.post('/admin/login', formData, {
+        axios.post('/bitacorasuti.com/admin/login', formData, {
         })
             .then((response) => {
                 closeLoading();
