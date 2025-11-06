@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('bitacoras_incidencias', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_operador')->constrained('operadores');
             $table->foreignId('id_usuario')->constrained('usuarios');
 
             // hora y fecha del guardado

@@ -19,6 +19,7 @@
     <section class="content-header">
         <div class="row mb-2">
             <div class="col-sm-6">
+                <label>Usuario: {{ $infoUsuario->nombre }}</label>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">

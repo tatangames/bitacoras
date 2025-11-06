@@ -19,6 +19,7 @@
     <section class="content-header">
         <div class="row mb-2">
             <div class="col-sm-6">
+                <label>Usuario: {{ $infoUsuario->nombre }}</label>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -72,14 +73,6 @@
                                     <div class="form-group" style="width: 30%">
                                         <label>Fecha <span style="color: red">*</span></label>
                                         <input type="date" class="form-control" id="fechahora-nuevo">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Operador: <span style="color: red">*</span></label>
-                                        <br>
-                                        <select width="100%" class="form-control" id="select-operador">
-
-                                        </select>
                                     </div>
 
                                     <div class="form-group">
@@ -170,22 +163,12 @@
                         $('#id-editar').val(id);
                         $('#fechahora-nuevo').val(response.data.info.fecha);
 
-
                         $('#equipo-nuevo').val(response.data.info.equipo);
                         $('#tipomantenimiento-nuevo').val(response.data.info.tipo_mantenimiento);
                         $('#descripcion-nuevo').val(response.data.info.descripcion);
                         $('#proximo-nuevo').val(response.data.info.proximo_mantenimiento);
                         $('#observacion-nuevo').val(response.data.info.observaciones);
 
-                        document.getElementById("select-operador").options.length = 0;
-
-                        $.each(response.data.arrayOperador, function( key, val ){
-                            if(response.data.info.id_operador == val.id){
-                                $('#select-operador').append('<option value="' +val.id +'" selected="selected">'+ val.nombre +'</option>');
-                            }else{
-                                $('#select-operador').append('<option value="' +val.id +'">'+ val.nombre +'</option>');
-                            }
-                        });
 
                     }else{
                         toastr.error('Información no encontrada');
@@ -201,7 +184,6 @@
             var id = document.getElementById('id-editar').value;
 
             var fecha = document.getElementById('fechahora-nuevo').value;
-            var selectOperador = document.getElementById('select-operador').value;
 
             var equipo = document.getElementById('equipo-nuevo').value;
             var mantenimiento = document.getElementById('tipomantenimiento-nuevo').value;
@@ -209,14 +191,8 @@
             var proximo = document.getElementById('proximo-nuevo').value;
             var observacion = document.getElementById('observacion-nuevo').value;
 
-
             if(fecha === ''){
                 toastr.error('Fecha es requerida');
-                return;
-            }
-
-            if(selectOperador === ''){
-                toastr.error('Operador es requerida');
                 return;
             }
 
@@ -230,7 +206,6 @@
             var formData = new FormData();
             formData.append('id', id);
             formData.append('fecha', fecha);
-            formData.append('operador', selectOperador);
             formData.append('equipo', equipo);
             formData.append('mantenimiento', mantenimiento);
             formData.append('descripcion', descripcion);

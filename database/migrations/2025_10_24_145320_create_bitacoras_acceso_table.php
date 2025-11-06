@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('bitacoras_acceso', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_operador')->constrained('operadores'); // ->cascadeOnDelete() si aplica
             $table->foreignId('id_usuario')->constrained('usuarios');
             $table->foreignId('id_acceso')->constrained('tipo_acceso');
             $table->dateTime('fecha_registro'); // cuando guarda

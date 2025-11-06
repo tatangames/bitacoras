@@ -32,15 +32,6 @@
                                     <input type="date" class="form-control" id="fechahora-nuevo" value="{{ $fechaHora }}">
                                 </div>
 
-                                <div class="form-group">
-                                    <label>Operador: <span style="color: red">*</span></label>
-                                    <br>
-                                    <select width="100%" class="form-control" id="select-operador">
-                                        @foreach($arrayOperador as $item)
-                                            <option value="{{ $item->id }}">{{ $item->nombre }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
 
                                 <div class="form-group">
                                     <label>Tipo Incidente</label>
@@ -108,7 +99,6 @@
             function guardarRegistro(){
 
                 var fecha = document.getElementById('fechahora-nuevo').value;
-                var selectOperador = document.getElementById('select-operador').value;
                 var tipo = document.getElementById('tipo-nuevo').value;
                 var sistema = document.getElementById('sistema-nuevo').value;
                 var nivel = document.getElementById('select-nivel').value;
@@ -121,11 +111,6 @@
                     return;
                 }
 
-                if(selectOperador === ''){
-                    toastr.error('Operador es requerida');
-                    return;
-                }
-
                 const btnGuardar = document.getElementById('btn-guardar');
 
                 // Desactivar botón al iniciar
@@ -135,7 +120,6 @@
                 openLoading();
                 var formData = new FormData();
                 formData.append('fecha', fecha);
-                formData.append('operador', selectOperador);
                 formData.append('tipo', tipo);
                 formData.append('sistema', sistema);
                 formData.append('nivel', nivel);

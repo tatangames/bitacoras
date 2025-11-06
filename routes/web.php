@@ -62,12 +62,7 @@ Route::post('/admin/editar-perfil/actualizar', [PerfilController::class, 'editar
 // --- SIN PERMISOS VISTA 403 ---
 Route::get('sin-permisos', [ControlController::class,'indexSinPermiso'])->name('no.permisos.index');
 
-// === OPERADORES / TECNICOS ====
-Route::get('/admin/operadores/index', [SistemaController::class,'indexOperadores'])->name('admin.operador.index');
-Route::get('/admin/operadores/tabla', [SistemaController::class,'tablaOperadores']);
-Route::post('/admin/operadores/nuevo', [SistemaController::class,'nuevoOperador']);
-Route::post('/admin/operadores/informacion', [SistemaController::class,'infoOperador']);
-Route::post('/admin/operadores/editar', [SistemaController::class,'actualizarOperador']);
+
 
 //  === UNIDAD ===
 Route::get('/admin/unidad/index', [SistemaController::class,'indexUnidad'])->name('admin.unidad.index');

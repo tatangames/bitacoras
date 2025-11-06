@@ -8,7 +8,6 @@
                             <thead>
                             <tr>
                                 <th  style="width: 12%">Fecha</th>
-                                <th  style="width: 12%">Operador</th>
                                 <th  style="width: 12%">Equipo</th>
                                 <th  style="width: 12%">Tipo Mantenimiento</th>
                                 <th  style="width: 12%">Descripción</th>
@@ -24,9 +23,6 @@
                                     {{-- Usa timestamp para ordenar sin ambigüedad --}}
                                     <td data-order="{{ strtotime($dato->fecha) }}">
                                         {{ $dato->fechaFormat }}
-                                    </td>
-                                    <td>
-                                        {{ $dato->nombreOperador }}
                                     </td>
                                     <td>
                                         {{ $dato->equipo }}

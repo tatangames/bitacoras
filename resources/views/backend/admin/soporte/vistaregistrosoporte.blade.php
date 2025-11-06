@@ -43,16 +43,6 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Técnico: <span style="color: red">*</span></label>
-                                    <br>
-                                    <select width="100%" class="form-control" id="select-operador">
-                                        @foreach($arrayOperador as $item)
-                                            <option value="{{ $item->id }}">{{ $item->nombre }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
                                     <label>Descripción</label>
                                     <input type="text" class="form-control" id="descripcion-nuevo" placeholder="">
                                 </div>
@@ -108,7 +98,6 @@
             function guardarRegistro(){
 
                 var fecha = document.getElementById('fechahora-nuevo').value;
-                var selectOperador = document.getElementById('select-operador').value;
                 var selectUnidad = document.getElementById('select-unidad').value;
 
                 var descripcion = document.getElementById('descripcion-nuevo').value;
@@ -119,11 +108,6 @@
 
                 if(fecha === ''){
                     toastr.error('Fecha es requerida');
-                    return;
-                }
-
-                if(selectOperador === ''){
-                    toastr.error('Operador es requerida');
                     return;
                 }
 
@@ -141,7 +125,6 @@
                 openLoading();
                 var formData = new FormData();
                 formData.append('fecha', fecha);
-                formData.append('operador', selectOperador);
                 formData.append('unidad', selectUnidad);
                 formData.append('descripcion', descripcion);
                 formData.append('solucion', solucion);

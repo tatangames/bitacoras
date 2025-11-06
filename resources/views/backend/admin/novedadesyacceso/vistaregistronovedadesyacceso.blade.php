@@ -34,16 +34,6 @@
 
 
                                 <div class="form-group">
-                                    <label>Operador: <span style="color: red">*</span></label>
-                                    <br>
-                                    <select width="100%" class="form-control" id="select-operador">
-                                        @foreach($arrayOperador as $item)
-                                            <option value="{{ $item->id }}">{{ $item->nombre }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
                                     <label>Tipo de Acceso: <span style="color: red">*</span></label>
                                     <br>
                                     <select width="100%" class="form-control" id="select-acceso">
@@ -104,7 +94,6 @@
         function guardarRegistro(){
 
             var fecha = document.getElementById('fechahora-nuevo').value;
-            var selectOperador = document.getElementById('select-operador').value;
             var selectAcceso = document.getElementById('select-acceso').value;
 
             var novedades = document.getElementById('novedades-nuevo').value;
@@ -113,11 +102,6 @@
 
             if(fecha === ''){
                 toastr.error('Fecha y Hora es requerida');
-                return;
-            }
-
-            if(selectOperador === ''){
-                toastr.error('Operador es requerida');
                 return;
             }
 
@@ -136,7 +120,6 @@
             openLoading();
             var formData = new FormData();
             formData.append('fecha', fecha);
-            formData.append('operador', selectOperador);
             formData.append('acceso', selectAcceso);
             formData.append('novedades', novedades);
             formData.append('equipo', equipo);

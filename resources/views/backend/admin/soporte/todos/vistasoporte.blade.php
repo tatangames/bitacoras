@@ -19,6 +19,7 @@
     <section class="content-header">
         <div class="row mb-2">
             <div class="col-sm-6">
+                <label>Usuario: {{ $infoUsuario->nombre }}</label>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -78,13 +79,6 @@
                                         <label>Unidad: <span style="color: red">*</span></label>
                                         <br>
                                         <select width="100%" class="form-control" id="select-unidad">
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Técnico: <span style="color: red">*</span></label>
-                                        <br>
-                                        <select width="100%" class="form-control" id="select-operador">
                                         </select>
                                     </div>
 
@@ -178,16 +172,7 @@
 
                         $('#observacion-nuevo').val(response.data.info.observaciones);
 
-                        document.getElementById("select-operador").options.length = 0;
                         document.getElementById("select-unidad").options.length = 0;
-
-                        $.each(response.data.arrayOperador, function( key, val ){
-                            if(response.data.info.id_operador == val.id){
-                                $('#select-operador').append('<option value="' +val.id +'" selected="selected">'+ val.nombre +'</option>');
-                            }else{
-                                $('#select-operador').append('<option value="' +val.id +'">'+ val.nombre +'</option>');
-                            }
-                        });
 
                         $.each(response.data.arrayUnidad, function( key, val ){
                             if(response.data.info.id_unidad == val.id){
@@ -211,7 +196,6 @@
             var id = document.getElementById('id-editar').value;
 
             var fecha = document.getElementById('fechahora-nuevo').value;
-            var selectOperador = document.getElementById('select-operador').value;
             var selectUnidad = document.getElementById('select-unidad').value;
 
             var descripcion = document.getElementById('descripcion-nuevo').value;
@@ -222,11 +206,6 @@
 
             if(fecha === ''){
                 toastr.error('Fecha es requerida');
-                return;
-            }
-
-            if(selectOperador === ''){
-                toastr.error('Operador es requerida');
                 return;
             }
 
@@ -246,7 +225,6 @@
             var formData = new FormData();
             formData.append('id', id);
             formData.append('fecha', fecha);
-            formData.append('operador', selectOperador);
             formData.append('unidad', selectUnidad);
             formData.append('descripcion', descripcion);
             formData.append('solucion', solucion);

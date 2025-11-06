@@ -19,6 +19,7 @@
     <section class="content-header">
         <div class="row mb-2">
             <div class="col-sm-6">
+                <label>Usuario: {{ $infoUsuario->nombre }}</label>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -72,14 +73,6 @@
                                     <div class="form-group" style="width: 30%">
                                         <label>Fecha y hora</label>
                                         <input type="datetime-local" class="form-control" id="fechahora-nuevo" value="">
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label>Operador:</label>
-                                        <br>
-                                        <select width="100%" class="form-control" id="select-operador">
-                                        </select>
                                     </div>
 
                                     <div class="form-group">
@@ -173,16 +166,7 @@
                         $('#equipo-nuevo').val(response.data.info.equipo_involucrado);
                         $('#observacion-nuevo').val(response.data.info.observaciones);
 
-                        document.getElementById("select-operador").options.length = 0;
                         document.getElementById("select-acceso").options.length = 0;
-
-                        $.each(response.data.arrayOperador, function( key, val ){
-                            if(response.data.info.id_operador == val.id){
-                                $('#select-operador').append('<option value="' +val.id +'" selected="selected">'+ val.nombre +'</option>');
-                            }else{
-                                $('#select-operador').append('<option value="' +val.id +'">'+ val.nombre +'</option>');
-                            }
-                        });
 
                         $.each(response.data.arrayTipoAcceso, function( key, val ){
                             if(response.data.info.id_acceso == val.id){

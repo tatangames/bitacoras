@@ -38,13 +38,6 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('admin.operador.index') }}" target="frameprincipal" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Operador</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
                             <a href="{{ route('admin.unidad.index') }}" target="frameprincipal" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Unidad</p>
@@ -55,7 +48,7 @@
                  </li>
                 @endcan
 
-
+                @can('sidebar.usuarios')
                 <li class="nav-item">
                     <a href="{{ route('admin.registro.novedades.acceso') }}" target="frameprincipal" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
@@ -123,10 +116,9 @@
                                 <p>Incidencias</p>
                             </a>
                         </li>
-
-
                     </ul>
                 </li>
+                @endcan
 
 
             </ul>
