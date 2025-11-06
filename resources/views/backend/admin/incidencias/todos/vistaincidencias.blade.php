@@ -23,7 +23,7 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">Bitacoras</li>
-                    <li class="breadcrumb-item active">Listado Noveades y Acceso</li>
+                    <li class="breadcrumb-item active">Listado de Incidencias</li>
                 </ol>
             </div>
         </div>
@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="card card-gray-dark">
                 <div class="card-header">
-                    <h3 class="card-title">Listado de Novedades y Acceso</h3>
+                    <h3 class="card-title">Listado</h3>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -70,41 +70,46 @@
                                     </div>
 
                                     <div class="form-group" style="width: 30%">
-                                        <label>Fecha y hora</label>
-                                        <input type="datetime-local" class="form-control" id="fechahora-nuevo" value="">
+                                        <label>Fecha <span style="color: red">*</span></label>
+                                        <input type="date" class="form-control" id="fechahora-nuevo">
                                     </div>
 
-
                                     <div class="form-group">
-                                        <label>Operador:</label>
+                                        <label>Operador: <span style="color: red">*</span></label>
                                         <br>
                                         <select width="100%" class="form-control" id="select-operador">
                                         </select>
                                     </div>
 
                                     <div class="form-group">
-                                        <label>Tipo de Acceso:</label>
+                                        <label>Tipo Incidente</label>
+                                        <input type="text" maxlength="3000" class="form-control" id="tipo-nuevo" placeholder="Tipo de Incidente">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Sistema Afectado</label>
+                                        <input type="text" maxlength="3000" class="form-control" id="sistema-nuevo" placeholder="sistema Afectado">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Nivel: <span style="color: red">*</span></label>
                                         <br>
-                                        <select width="100%" class="form-control" id="select-acceso">
+                                        <select width="100%" class="form-control" id="select-nivel">
+                                            <option value="1">Ordinarios</option>
+                                            <option value="2">Relevantes</option>
+                                            <option value="3">Críticos</option>
                                         </select>
                                     </div>
 
                                     <div class="form-group">
-                                        <label>Novedades</label>
-                                        <input type="text" class="form-control" id="novedades-nuevo" placeholder="Novedades">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Equipo involucrado</label>
-                                        <input type="text" class="form-control" id="equipo-nuevo" placeholder="Equipo involucrado">
+                                        <label>Medida Correctivas</label>
+                                        <input type="text" maxlength="3000" class="form-control" id="medida-nuevo" placeholder="Medidas Correctivas">
                                     </div>
 
                                     <div class="form-group">
                                         <label>Observaciones</label>
-                                        <input type="text" class="form-control" id="observacion-nuevo" placeholder="Observaciones">
+                                        <input type="text" maxlength="3000" class="form-control" id="observacion-nuevo" placeholder="Observaciones">
                                     </div>
-
-
 
                                 </div>
                             </div>
@@ -134,7 +139,7 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
-            var ruta = "{{ URL::to('/admin/bitacora/lista/noveadesacceso/tabla') }}";
+            var ruta = "{{ URL::to('/admin/bitacora/lista/incidencias/tabla') }}";
             $('#tablaDatatable').load(ruta);
 
             document.getElementById("divcontenedor").style.display = "block";
@@ -145,7 +150,7 @@
     <script>
 
         function recargar(){
-            var ruta = "{{ URL::to('/admin/bitacora/lista/noveadesacceso/tabla') }}";
+            var ruta = "{{ URL::to('/admin/bitacora/lista/incidencias/tabla') }}";
             $('#tablaDatatable').load(ruta);
         }
 
@@ -154,12 +159,11 @@
             $('#modalAgregar').modal('show');
         }
 
-
         function informacion(id){
             openLoading();
             document.getElementById("formulario-editar").reset();
 
-            axios.post(url+'/bitacora/noveadesacceso/informacion',{
+            axios.post(url+'/bitacora/incidencias/informacion',{
                 'id': id
             })
                 .then((response) => {
@@ -169,12 +173,14 @@
                         $('#id-editar').val(id);
                         $('#fechahora-nuevo').val(response.data.info.fecha);
 
-                        $('#novedades-nuevo').val(response.data.info.novedad);
-                        $('#equipo-nuevo').val(response.data.info.equipo_involucrado);
+
+                        $('#tipo-nuevo').val(response.data.info.tipo_incidente);
+                        $('#sistema-nuevo').val(response.data.info.sistema_afectado);
+
+                        $('#medida-nuevo').val(response.data.info.medida_correctivas);
                         $('#observacion-nuevo').val(response.data.info.observaciones);
 
                         document.getElementById("select-operador").options.length = 0;
-                        document.getElementById("select-acceso").options.length = 0;
 
                         $.each(response.data.arrayOperador, function( key, val ){
                             if(response.data.info.id_operador == val.id){
@@ -184,13 +190,7 @@
                             }
                         });
 
-                        $.each(response.data.arrayTipoAcceso, function( key, val ){
-                            if(response.data.info.id_acceso == val.id){
-                                $('#select-acceso').append('<option value="' +val.id +'" selected="selected">'+ val.nombre +'</option>');
-                            }else{
-                                $('#select-acceso').append('<option value="' +val.id +'">'+ val.nombre +'</option>');
-                            }
-                        });
+                        document.getElementById('select-nivel').value = response.data.info.nivel;
 
                     }else{
                         toastr.error('Información no encontrada');
@@ -204,27 +204,22 @@
 
         function editar(){
             var id = document.getElementById('id-editar').value;
-
             var fecha = document.getElementById('fechahora-nuevo').value;
             var selectOperador = document.getElementById('select-operador').value;
-            var selectAcceso = document.getElementById('select-acceso').value;
-
-            var novedades = document.getElementById('novedades-nuevo').value;
-            var equipo = document.getElementById('equipo-nuevo').value;
+            var tipo = document.getElementById('tipo-nuevo').value;
+            var sistema = document.getElementById('sistema-nuevo').value;
+            var nivel = document.getElementById('select-nivel').value;
+            var medida = document.getElementById('medida-nuevo').value;
             var observacion = document.getElementById('observacion-nuevo').value;
 
+
             if(fecha === ''){
-                toastr.error('Fecha y Hora es requerida');
+                toastr.error('Fecha es requerida');
                 return;
             }
 
             if(selectOperador === ''){
                 toastr.error('Operador es requerida');
-                return;
-            }
-
-            if(selectAcceso === ''){
-                toastr.error('Acceso es requerida');
                 return;
             }
 
@@ -234,24 +229,24 @@
             btnGuardar.disabled = true;
             btnGuardar.textContent = 'Guardando...';
 
-
             openLoading();
             var formData = new FormData();
             formData.append('id', id);
             formData.append('fecha', fecha);
             formData.append('operador', selectOperador);
-            formData.append('acceso', selectAcceso);
-            formData.append('novedades', novedades);
-            formData.append('equipo', equipo);
+            formData.append('tipo', tipo);
+            formData.append('sistema', sistema);
+            formData.append('nivel', nivel);
+            formData.append('medida', medida);
             formData.append('observacion', observacion);
 
-            axios.post(url + '/bitacora/noveadesacceso/actualizar', formData)
+            axios.post(url + '/bitacora/incidencias/actualizar', formData)
                 .then((response) => {
                     closeLoading();
                     if (response.data.success === 1) {
                         toastr.success('Actualizado correctamente');
                         $('#modalEditar').modal('hide');
-                        recargar();
+                        recargar()
                     } else {
                         toastr.error('Error al registrar');
                     }
@@ -270,8 +265,49 @@
                 btnGuardar.disabled = false;
                 btnGuardar.textContent = 'Guardar';
             }
-
         }
+
+
+        function modalBorrar(id){
+            Swal.fire({
+                title: '¿Borrar?',
+                text: "",
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    borrarFila(id);
+                }
+            })
+        }
+
+        function borrarFila(id){
+            openLoading();
+            var formData = new FormData();
+            formData.append('id', id);
+
+            axios.post(url + '/bitacora/incidencias/borrar', formData)
+                .then((response) => {
+                    closeLoading();
+                    if (response.data.success === 1) {
+                        toastr.success('Borrado correctamente');
+                        recargar()
+                    } else {
+                        toastr.error('Error al registrar');
+                    }
+                })
+                .catch((error) => {
+                    toastr.error('Error al registrar');
+                    closeLoading();
+                })
+                .finally(() => {
+
+                });
+        }
+
 
 
     </script>

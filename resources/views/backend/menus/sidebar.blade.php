@@ -37,23 +37,23 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a href="{{ route('admin.operador.index') }}" target="frameprincipal" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Operador</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.unidad.index') }}" target="frameprincipal" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Unidad</p>
+                            </a>
+                        </li>
+
                     </ul>
                  </li>
                 @endcan
-
-                <li class="nav-item">
-                    <a href="{{ route('admin.operador.index') }}" target="frameprincipal" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Operador</p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('admin.unidad.index') }}" target="frameprincipal" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Unidad</p>
-                    </a>
-                </li>
 
 
                 <li class="nav-item">
@@ -74,6 +74,13 @@
                     <a href="{{ route('admin.registro.soporte') }}" target="frameprincipal" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Soporte</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.registro.incidencias') }}" target="frameprincipal" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Incidencias</p>
                     </a>
                 </li>
 
@@ -109,6 +116,14 @@
                                 <p>Soporte</p>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.bitacora.listado.incidencias') }}" target="frameprincipal" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Incidencias</p>
+                            </a>
+                        </li>
+
 
                     </ul>
                 </li>

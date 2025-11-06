@@ -13,7 +13,17 @@ return new class extends Migration
     {
         Schema::create('bitacoras_incidencias', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->foreignId('id_operador')->constrained('operadores');
+            $table->foreignId('id_usuario')->constrained('usuarios');
+
+            // hora y fecha del guardado
+            $table->datetime('fecha_registro'); // esto cuando guarda el registro
+            $table->date('fecha');
+            $table->text('tipo_incidente')->nullable();
+            $table->text('sistema_afectado')->nullable();
+            $table->integer('nivel'); // ordinarios, relevantes, criticos
+            $table->text('medida_correctivas')->nullable();
+            $table->text('observaciones')->nullable();
         });
     }
 

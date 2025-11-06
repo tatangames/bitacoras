@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Sistema;
 
 use App\Http\Controllers\Controller;
 use App\Models\BitacorasAcceso;
+use App\Models\BitacorasIncidencias;
 use App\Models\BitacorasMantenimiento;
 use App\Models\BitacorasSoporte;
 use App\Models\Operador;
@@ -337,7 +338,6 @@ class BitacorasController extends Controller
             'unidad' => 'required',
         );
 
-        Log::info($request->all());
 
         $validar = Validator::make($request->all(), $regla);
 
@@ -464,8 +464,174 @@ class BitacorasController extends Controller
 
 
 
+    // =============================== INCIDENCIAS ========================================
+
+    public function registroBitacoraIncidencias()
+    {
+        $arrayOperador = Operador::orderBy('nombre', 'ASC')->get();
+        $fechaHora = Carbon::now('America/El_Salvador')->format('Y-m-d');
+
+        return view('backend.admin.incidencias.vistaregistroincidencias', compact('arrayOperador', 'fechaHora'));
+    }
 
 
+    public function guardarIncidencias(Request $request)
+    {
+        $regla = array(
+            'fecha' => 'required',
+            'operador' => 'required',
+        );
+
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+        DB::beginTransaction();
+
+        try {
+
+            $userId  = auth()->id();
+            $fechaActual = Carbon::now('America/El_Salvador');
+
+            $dato = new BitacorasIncidencias();
+            $dato->id_operador = $request->operador;
+            $dato->id_usuario = $userId;
+            $dato->fecha_registro = $fechaActual;
+            $dato->fecha = $request->fecha;
+            $dato->tipo_incidente = $request->tipo;
+            $dato->sistema_afectado = $request->sistema;
+            $dato->nivel = $request->nivel; // criticos, relevantes, ordinarios
+            $dato->medida_correctivas = $request->medida;
+            $dato->observaciones = $request->observacion;
+            $dato->save();
+
+            DB::commit();
+            return ['success' => 1];
+        } catch (\Throwable $e) {
+            Log::info('error ' . $e);
+            DB::rollback();
+            return ['success' => 99];
+        }
+    }
+
+
+    //****************
+
+
+    public function indexBitacoraIncidencias()
+    {
+        return view('backend.admin.incidencias.todos.vistaincidencias');
+    }
+
+    public function tablaBitacoraIncidencias()
+    {
+        $arrayBitacoraIncidencias = BitacorasIncidencias::orderBy('fecha', 'ASC')->get()
+            ->map(function ($item) {
+
+                // Crear campo formateado
+                $item->fechaFormat = Carbon::parse($item->fecha)->format('d/m/Y');
+
+                $fechaProximo = "";
+                if($item->proximo_mantenimiento != null){
+                    $fechaProximo = Carbon::parse($item->proximo_mantenimiento)->format('d/m/Y');
+                }
+                $item->fechaProximo = $fechaProximo;
+
+                $infoOperador = Operador::where('id', $item->id_operador)->first();
+
+                $item->nombreOperador = $infoOperador->nombre;
+
+
+                $niveles = [
+                    1 => 'Ordinarios',
+                    2 => 'Relevantes',
+                    3 => 'Críticos',
+                ];
+
+                $item->nivelFormat = $niveles[$item->nivel] ?? '';
+
+                return $item;
+            });
+
+        return view('backend.admin.incidencias.todos.tablaincidencias', compact('arrayBitacoraIncidencias'));
+    }
+
+
+    public function informacionIncidencias(Request $request)
+    {
+        $regla = array(
+            'id' => 'required'
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+
+        $info = BitacorasIncidencias::where('id', $request->id)->first();
+
+        $arrayOperador = Operador::orderBy('nombre', 'ASC')->get();
+
+        return ['success' => 1, 'info' => $info, 'arrayOperador' => $arrayOperador];
+    }
+
+
+    public function actualizarIncidencias(Request $request)
+    {
+        $regla = array(
+            'id' => 'required',
+            'fecha' => 'required',
+            'operador' => 'required',
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+        DB::beginTransaction();
+
+        try {
+
+            BitacorasIncidencias::where('id', $request->id)->update([
+                'id_operador' => $request->operador,
+                'fecha' => $request->fecha,
+                'tipo_incidente' => $request->tipo,
+                'sistema_afectado' => $request->sistema,
+                'nivel' => $request->nivel,
+                'medida_correctivas' => $request->medida,
+                'observaciones' => $request->observacion
+            ]);
+
+            DB::commit();
+            return ['success' => 1];
+        } catch (\Throwable $e) {
+            Log::info('error ' . $e);
+            DB::rollback();
+            return ['success' => 99];
+        }
+    }
+
+
+    public function borrarIncidencias(Request $request)
+    {
+        $regla = array(
+            'id' => 'required',
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+
+        BitacorasIncidencias::where('id', $request->id)->delete();
+
+        return ['success' => 1];
+    }
 
 
 

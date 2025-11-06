@@ -113,7 +113,14 @@ Route::get('/admin/bitacora/lista/soporte/tabla', [BitacorasController::class,'t
 Route::post('/admin/bitacora/soporte/informacion', [BitacorasController::class,'informacionSoporte']);
 Route::post('/admin/bitacora/soporte/actualizar', [BitacorasController::class,'actualizarSoporte']);
 
+// INCIDENCIAS
+Route::get('/admin/registro/incidencias/index', [BitacorasController::class,'registroBitacoraIncidencias'])->name('admin.registro.incidencias');
+Route::post('/admin/bitacora-incidencias/registro', [BitacorasController::class,'guardarIncidencias']);
 
-
-
+// vista para ver todos
+Route::get('/admin/bitacora/lista/incidencias/index', [BitacorasController::class,'indexBitacoraIncidencias'])->name('admin.bitacora.listado.incidencias');
+Route::get('/admin/bitacora/lista/incidencias/tabla', [BitacorasController::class,'tablaBitacoraIncidencias']);
+Route::post('/admin/bitacora/incidencias/informacion', [BitacorasController::class,'informacionIncidencias']);
+Route::post('/admin/bitacora/incidencias/actualizar', [BitacorasController::class,'actualizarIncidencias']);
+Route::post('/admin/bitacora/incidencias/borrar', [BitacorasController::class,'borrarIncidencias']);
 

@@ -33,7 +33,7 @@
         <div class="container-fluid">
             <div class="card card-gray-dark">
                 <div class="card-header">
-                    <h3 class="card-title">Listado</h3>
+                    <h3 class="card-title">Listado de Mantenimientos</h3>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -243,7 +243,7 @@
                     if (response.data.success === 1) {
                         toastr.success('Actualizado correctamente');
                         $('#modalEditar').modal('hide');
-                        document.getElementById('formulario-editar').reset();
+                        recargar()
                     } else {
                         toastr.error('Error al registrar');
                     }
