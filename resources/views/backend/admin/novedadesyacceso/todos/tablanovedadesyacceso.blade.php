@@ -41,8 +41,8 @@
                                     </td>
 
                                     <td>
-                                        <button type="button" style="font-weight: bold; color: white !important;"
-                                                class="button button-primary button-rounded button-pill button-small"
+                                        <button type="button"
+                                                class="btn btn-info btn-xs"
                                                 onclick="informacion({{ $dato->id }})">
                                             <i class="fas fa-edit" title="Editar"></i>&nbsp; Editar
                                         </button>

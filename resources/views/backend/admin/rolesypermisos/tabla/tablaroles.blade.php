@@ -22,11 +22,11 @@
 
                                     <td style="width: 8%">
 
-                                        <button type="button" style="font-weight: bold" class="button button-primary button-pill button-small" onclick="verInformacion({{ $key }})">
+                                        <button type="button" class="btn btn-info btn-xs" onclick="verInformacion({{ $key }})">
                                             <i class="fas fa-pencil-alt" title="Editar"></i>&nbsp; Editar
                                         </button>
 
-                                        <button type="button" style="margin-top: 5px; font-weight: bold" class="button button-caution button-pill button-small" onclick="modalBorrar({{ $key }})">
+                                        <button type="button" style="margin: 3px" class="btn btn-danger btn-xs" onclick="modalBorrar({{ $key }})">
                                             <i class="fas fa-trash-alt" title="Eliminar"></i>&nbsp; Eliminación Global
                                         </button>
                                     </td>

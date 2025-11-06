@@ -20,7 +20,7 @@
                                     <td>{{ $value }}</td>
 
                                     <td>
-                                        <button type="button" style="font-weight: bold" class="button button-caution button-pill button-small" onclick="modalBorrar({{ $key }})">
+                                        <button type="button" class="btn btn-danger btn-xs" onclick="modalBorrar({{ $key }})">
                                             <i class="fas fa-trash-alt" title="Eliminar"></i>&nbsp; Eliminar
                                         </button>
                                     </td>

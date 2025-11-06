@@ -23,7 +23,7 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">Bitacoras</li>
-                    <li class="breadcrumb-item active">Listado Noveades y Acceso</li>
+                    <li class="breadcrumb-item active">Listado Novedades y Acceso</li>
                 </ol>
             </div>
         </div>
@@ -134,7 +134,7 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
-            var ruta = "{{ URL::to('/admin/bitacora/lista/noveadesacceso/tabla') }}";
+            var ruta = "{{ URL::to('/admin/bitacora/lista/novedadesacceso/tabla') }}";
             $('#tablaDatatable').load(ruta);
 
             document.getElementById("divcontenedor").style.display = "block";
@@ -145,7 +145,7 @@
     <script>
 
         function recargar(){
-            var ruta = "{{ URL::to('/admin/bitacora/lista/noveadesacceso/tabla') }}";
+            var ruta = "{{ URL::to('/admin/bitacora/lista/novedadesacceso/tabla') }}";
             $('#tablaDatatable').load(ruta);
         }
 
@@ -159,7 +159,7 @@
             openLoading();
             document.getElementById("formulario-editar").reset();
 
-            axios.post(url+'/bitacora/noveadesacceso/informacion',{
+            axios.post(url+'/bitacora/novedadesacceso/informacion',{
                 'id': id
             })
                 .then((response) => {
@@ -245,7 +245,7 @@
             formData.append('equipo', equipo);
             formData.append('observacion', observacion);
 
-            axios.post(url + '/bitacora/noveadesacceso/actualizar', formData)
+            axios.post(url + '/bitacora/novedadesacceso/actualizar', formData)
                 .then((response) => {
                     closeLoading();
                     if (response.data.success === 1) {

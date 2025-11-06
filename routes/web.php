@@ -84,10 +84,10 @@ Route::get('/admin/registro/novedades-acceso/index', [BitacorasController::class
 Route::post('/admin/bitacora-novedades/registro', [BitacorasController::class,'guardarNovedadesAcceso']);
 
 // vista para ver todos
-Route::get('/admin/bitacora/lista/noveadesacceso/index', [BitacorasController::class,'indexBitacoraNovedadesAcceso'])->name('admin.bitacora.acceso.novedades');
-Route::get('/admin/bitacora/lista/noveadesacceso/tabla', [BitacorasController::class,'tablaBitacoraNovedadesAcceso']);
-Route::post('/admin/bitacora/noveadesacceso/informacion', [BitacorasController::class,'informacionNovedadesAcceso']);
-Route::post('/admin/bitacora/noveadesacceso/actualizar', [BitacorasController::class,'actualizarNovedadesAcceso']);
+Route::get('/admin/bitacora/lista/novedadesacceso/index', [BitacorasController::class,'indexBitacoraNovedadesAcceso'])->name('admin.bitacora.acceso.novedades');
+Route::get('/admin/bitacora/lista/novedadesacceso/tabla', [BitacorasController::class,'tablaBitacoraNovedadesAcceso']);
+Route::post('/admin/bitacora/novedadesacceso/informacion', [BitacorasController::class,'informacionNovedadesAcceso']);
+Route::post('/admin/bitacora/novedadesacceso/actualizar', [BitacorasController::class,'actualizarNovedadesAcceso']);
 
 
 // MANTENIMIENTO
