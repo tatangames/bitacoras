@@ -24,7 +24,7 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">Bitacoras</li>
-                    <li class="breadcrumb-item active">Listado Novedades y Acceso</li>
+                    <li class="breadcrumb-item active">Listado Acceso y Novedades</li>
                 </ol>
             </div>
         </div>
@@ -34,7 +34,7 @@
         <div class="container-fluid">
             <div class="card card-gray-dark">
                 <div class="card-header">
-                    <h3 class="card-title">Listado de Novedades y Acceso</h3>
+                    <h3 class="card-title">Listado de Acceso y Novedades</h3>
                 </div>
                 <div class="card-body">
                     <div class="row">
