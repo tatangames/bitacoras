@@ -250,8 +250,6 @@ class BitacorasController extends Controller
                 }
                 $item->fechaProximo = $fechaProximo;
 
-
-
                 return $item;
             });
 
@@ -390,6 +388,13 @@ class BitacorasController extends Controller
 
                 $infoUnidad = Unidad::where('id', $item->id_unidad)->first();
                 $item->nombreUnidad = $infoUnidad->nombre;
+
+                if($item->estado == '1'){
+                    $item->estadoFormat = "Pendiente";
+                }else{
+                    $item->estadoFormat = "Solucionado";
+                }
+
 
                 return $item;
             });

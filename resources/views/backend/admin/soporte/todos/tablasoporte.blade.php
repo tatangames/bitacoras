@@ -34,9 +34,21 @@
                                     <td>
                                         {{ $dato->solucion }}
                                     </td>
+
                                     <td>
-                                        {{ $dato->estado }}
+                                        @switch($dato->estado)
+                                            @case(1)
+                                                <span class="badge bg-danger">Pendiente</span>
+                                                @break
+
+                                            @case(2)
+                                                <span class="badge bg-success">Solucionado</span>
+                                                @break
+                                            @default
+                                                <span class="badge bg-secondary">Desconocido</span>
+                                        @endswitch
                                     </td>
+
                                     <td>
                                         {{ $dato->observaciones }}
                                     </td>

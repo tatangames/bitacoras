@@ -53,8 +53,12 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Estado</label>
-                                    <input type="text" class="form-control" id="estado-nuevo" value="">
+                                    <label>Estado:</label>
+                                    <br>
+                                    <select width="100%" class="form-control" id="select-estado">
+                                        <option value="1">Pendiente</option>
+                                        <option value="2">Solucionado</option>
+                                    </select>
                                 </div>
 
                                 <div class="form-group">
@@ -102,7 +106,7 @@
 
                 var descripcion = document.getElementById('descripcion-nuevo').value;
                 var solucion = document.getElementById('solucion-nuevo').value;
-                var estado = document.getElementById('estado-nuevo').value;
+                var estado = document.getElementById('select-estado').value;
                 var observacion = document.getElementById('observacion-nuevo').value;
 
 

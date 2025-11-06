@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('fecha');
             $table->text('descripcion')->nullable();
             $table->text('solucion')->nullable();
-            $table->text('estado')->nullable();
+            $table->text('estado')->nullable(); // Pendiente y solucionado
             $table->text('observaciones')->nullable();
         });
     }

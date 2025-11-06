@@ -93,8 +93,12 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label>Estado</label>
-                                        <input type="text" class="form-control" id="estado-nuevo" value="">
+                                        <label>Estado:</label>
+                                        <br>
+                                        <select width="100%" class="form-control" id="select-estado">
+                                            <option value="1">Pendiente</option>
+                                            <option value="2">Solucionado</option>
+                                        </select>
                                     </div>
 
                                     <div class="form-group">
@@ -168,7 +172,6 @@
 
                         $('#descripcion-nuevo').val(response.data.info.descripcion);
                         $('#solucion-nuevo').val(response.data.info.solucion);
-                        $('#estado-nuevo').val(response.data.info.estado);
 
                         $('#observacion-nuevo').val(response.data.info.observaciones);
 
@@ -181,6 +184,8 @@
                                 $('#select-unidad').append('<option value="' +val.id +'">'+ val.nombre +'</option>');
                             }
                         });
+
+                        document.getElementById('select-estado').value = response.data.info.estado;
 
                     }else{
                         toastr.error('Información no encontrada');
@@ -200,7 +205,7 @@
 
             var descripcion = document.getElementById('descripcion-nuevo').value;
             var solucion = document.getElementById('solucion-nuevo').value;
-            var estado = document.getElementById('estado-nuevo').value;
+            var estado = document.getElementById('select-estado').value;
             var observacion = document.getElementById('observacion-nuevo').value;
 
 
