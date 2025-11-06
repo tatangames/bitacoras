@@ -250,6 +250,18 @@ class BitacorasController extends Controller
                 }
                 $item->fechaProximo = $fechaProximo;
 
+
+                if($item->tipo_mantenimiento == '1'){
+                    $item->estadoFormat = "Actualización";
+                }
+                else if($item->tipo_mantenimiento == '2'){
+                    $item->estadoFormat = "Preventivo";
+                }
+                else{
+                    $item->estadoFormat = "Correctivo";
+                }
+
+
                 return $item;
             });
 

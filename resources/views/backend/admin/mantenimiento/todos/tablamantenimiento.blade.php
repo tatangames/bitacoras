@@ -28,7 +28,7 @@
                                         {{ $dato->equipo }}
                                     </td>
                                     <td>
-                                        {{ $dato->tipo_mantenimiento }}
+                                        {{ $dato->estadoFormat }}
                                     </td>
                                     <td>
                                         {{ $dato->descripcion }}

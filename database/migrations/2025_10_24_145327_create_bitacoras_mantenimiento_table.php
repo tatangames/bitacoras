@@ -21,7 +21,12 @@ return new class extends Migration
             $table->date('fecha');
 
             $table->text('equipo')->nullable();
+
+            // 1- actualizacion
+            // 2- preventivo
+            // 3- correctivo
             $table->text('tipo_mantenimiento')->nullable();
+
             $table->text('descripcion')->nullable();
             $table->date('proximo_mantenimiento')->nullable();
             $table->text('observaciones')->nullable();

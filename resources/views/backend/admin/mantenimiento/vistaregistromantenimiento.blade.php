@@ -43,6 +43,16 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label>Tipo Mantenimiento:</label>
+                                    <br>
+                                    <select width="100%" class="form-control" id="select-mantenimiento">
+                                        <option value="1">Actualización</option>
+                                        <option value="2">Preventivo</option>
+                                        <option value="3">Correctivo</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
                                     <label>Descripción</label>
                                     <input type="text" class="form-control" id="descripcion-nuevo" placeholder="">
                                 </div>
@@ -95,7 +105,7 @@
                 var fecha = document.getElementById('fechahora-nuevo').value;
 
                 var equipo = document.getElementById('equipo-nuevo').value;
-                var mantenimiento = document.getElementById('tipomantenimiento-nuevo').value;
+                var mantenimiento = document.getElementById('select-mantenimiento').value;
                 var descripcion = document.getElementById('descripcion-nuevo').value;
                 var proximo = document.getElementById('proximo-nuevo').value;
                 var observacion = document.getElementById('observacion-nuevo').value;
