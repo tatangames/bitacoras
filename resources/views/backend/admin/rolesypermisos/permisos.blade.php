@@ -1,221 +1,264 @@
-@extends('backend.menus.superior')
+@extends('adminlte::page')
 
-@section('content-admin-css')
-    <link href="{{ asset('css/adminlte.min.css') }}" type="text/css" rel="stylesheet" />
-    <link href="{{ asset('css/dataTables.bootstrap4.css') }}" type="text/css" rel="stylesheet" />
-    <link href="{{ asset('css/toastr.min.css') }}" type="text/css" rel="stylesheet" />
-    <link href="{{ asset('css/responsive.bootstrap4.min.css') }}" type="text/css" rel="stylesheet" />
-    <link href="{{ asset('css/buttons.bootstrap4.min.css') }}" type="text/css" rel="stylesheet" />
-    <link href="{{ asset('css/estiloToggle.css') }}" type="text/css" rel="stylesheet" />
-    <link href="{{ asset('css/buttons_estilo.css') }}" rel="stylesheet">
+@section('title', 'Dashboard')
+
+@section('content_header')
+    <h1>Usuarios</h1>
 @stop
+{{-- Activa plugins que necesitas --}}
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
+@section('plugins.Toastr', true)
+@section('plugins.Sweetalert2', true)
 
-<style>
-    table{
-        /*Ajustar tablas*/
-        table-layout:fixed;
-    }
-</style>
+@section('content_top_nav_right')
+    <li class="nav-item dropdown">
+        <a href="#" class="nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-cogs"></i>
+            <span class="d-none d-md-inline">{{ Auth::user()->nombre ?? 'Usuario' }}</span>
+        </a>
 
-<div id="divcontenedor" style="display: none">
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="col-sm-12">
-                <h1>Permisos Usuarios</h1>
-            </div>
-            <br>
-            <button type="button" style="font-weight: bold; background-color: #28a745; color: white !important;" onclick="modalAgregar()" class="button button-3d button-rounded button-pill button-small">
-                <i class="fas fa-pencil-alt"></i>
-                Nuevo Usuario
-            </button>
+        <div class="dropdown-menu dropdown-menu-right">
+            <a href="{{ route('admin.perfil') }}" class="dropdown-item">
+                <i class="fas fa-user mr-2"></i> Editar Perfil
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <form action="{{ route('admin.logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="dropdown-item">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
+                </button>
+            </form>
         </div>
-    </section>
+    </li>
+@endsection
 
-    <section class="content">
-        <div class="container-fluid">
-            <div class="card card-success">
-                <div class="card-header">
-                    <h3 class="card-title">Lista</h3>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div id="tablaDatatable"></div>
+@section('content')
+
+    <div id="divcontenedor">
+        <section class="content-header">
+            <div class="container-fluid">
+                <button type="button" onclick="modalAgregar()" class="btn btn-success btn-sm">
+                    <i class="fas fa-pencil-alt"></i>
+                    Nuevo Usuario
+                </button>
+            </div>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="card card-gray-dark">
+                    <div class="card-header">
+                        <h3 class="card-title">Lista</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="tablaDatatable"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <div class="modal fade" id="modalAgregar">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Nuevo Usuario</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="formulario-nuevo">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12">
+        <div class="modal fade" id="modalAgregar">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Nuevo Usuario</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formulario-nuevo">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
 
-                                    <div class="form-group">
-                                        <label>Nombre</label>
-                                        <input type="text" maxlength="50" autocomplete="off" class="form-control" id="nombre-nuevo" placeholder="Nombre">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Usuario</label>
-                                        <input type="text" maxlength="50" autocomplete="off" class="form-control" id="usuario-nuevo" placeholder="Usuario">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Contraseña</label>
-                                        <input type="text" maxlength="16" autocomplete="off" class="form-control" id="password-nuevo" placeholder="Contraseña">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label style="color:#191818">Rol</label>
-                                        <br>
-                                        <div>
-                                            <select class="form-control" id="rol-nuevo">
-                                                @foreach($roles as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
-                                                @endforeach
-                                            </select>
+                                        <div class="form-group">
+                                            <label>Nombre</label>
+                                            <input type="text" maxlength="50" autocomplete="off" class="form-control" id="nombre-nuevo" placeholder="Nombre">
                                         </div>
-                                    </div>
 
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                    <button type="button" style="font-weight: bold; background-color: #28a745; color: white !important;" class="button button-3d button-rounded button-pill button-small" onclick="nuevoUsuario()">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="modal fade" id="modalEditar">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Editar Usuario</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="formulario-editar">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12">
-
-                                    <div class="form-group">
-                                        <label style="color:#191818">Rol</label>
-                                        <br>
-                                        <div>
-                                            <select class="form-control" id="rol-editar">
-                                            </select>
+                                        <div class="form-group">
+                                            <label>Usuario</label>
+                                            <input type="text" maxlength="50" autocomplete="off" class="form-control" id="usuario-nuevo" placeholder="Usuario">
                                         </div>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label>Nombre</label>
-                                        <input type="hidden" id="id-editar">
-                                        <input type="text" maxlength="50" autocomplete="off"  class="form-control" id="nombre-editar">
-                                    </div>
+                                        <div class="form-group">
+                                            <label>Contraseña</label>
+                                            <input type="text" maxlength="16" autocomplete="off" class="form-control" id="password-nuevo" placeholder="Contraseña">
+                                        </div>
 
-                                    <div class="form-group">
-                                        <label>Usuario</label>
-                                        <input type="text" maxlength="50" autocomplete="off" class="form-control" id="usuario-editar">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Contraseña</label>
-                                        <input type="text" maxlength="16" autocomplete="off" class="form-control" id="password-editar" placeholder="Contraseña">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Disponibilidad</label><br>
-                                        <label class="switch" style="margin-top:10px">
-                                            <input type="checkbox" id="toggle-editar">
-                                            <div class="slider round">
-                                                <span class="on">Activo</span>
-                                                <span class="off">Inactivo</span>
+                                        <div class="form-group">
+                                            <label style="color:#191818">Rol</label>
+                                            <br>
+                                            <div>
+                                                <select class="form-control" id="rol-nuevo">
+                                                    @foreach($roles as $key => $value)
+                                                        <option value="{{ $key }}">{{ $value }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
-                                        </label>
-                                    </div>
+                                        </div>
 
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-success" onclick="nuevoUsuario()">Guardar</button>
+                    </div>
                 </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                    <button type="button" style="font-weight: bold; background-color: #28a745; color: white !important;" class="button button-3d button-rounded button-pill button-small" onclick="actualizar()">Guardar</button>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="modalEditar">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Editar Usuario</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formulario-editar">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div class="form-group">
+                                            <label style="color:#191818">Rol</label>
+                                            <br>
+                                            <div>
+                                                <select class="form-control" id="rol-editar">
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Nombre</label>
+                                            <input type="hidden" id="id-editar">
+                                            <input type="text" maxlength="50" autocomplete="off" class="form-control" id="nombre-editar">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Usuario</label>
+                                            <input type="text" maxlength="50" autocomplete="off" class="form-control" id="usuario-editar">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Contraseña</label>
+                                            <input type="text" maxlength="16" autocomplete="off" class="form-control" id="password-editar" placeholder="Contraseña">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" onclick="actualizar()">Guardar</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-@extends('backend.menus.footerjs')
-@section('archivos-js')
 
-    <script src="{{ asset('js/jquery.dataTables.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('js/dataTables.bootstrap4.js') }}" type="text/javascript"></script>
+@stop
 
-    <script src="{{ asset('js/toastr.min.js') }}" type="text/javascript"></script>
+
+
+@section('js')
     <script src="{{ asset('js/axios.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('js/alertaPersonalizada.js') }}"></script>
-    <script src="{{ asset('js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('js/responsive.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('js/buttons.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('js/jszip.min.js') }}"></script>
-    <script src="{{ asset('js/buttons.html5.min.js') }}"></script>
 
-    <!-- incluir tabla -->
-    <script type="text/javascript">
-        $(document).ready(function(){
-            var ruta = "{{ URL::to('admin/permisos/tabla') }}";
-            $('#tablaDatatable').load(ruta);
-            document.getElementById("divcontenedor").style.display = "block";
+
+    <script>
+        $(function () {
+            const ruta = "{{ url('/admin/permisos/tabla') }}";
+
+            function initDataTable() {
+                // Si ya hay instancia, destrúyela antes de re-crear
+                if ($.fn.DataTable.isDataTable('#tabla')) {
+                    $('#tabla').DataTable().destroy();
+                }
+
+                // Inicializa
+                $('#tabla').DataTable({
+                    paging: true,
+                    lengthChange: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    autoWidth: false,
+                    responsive: true,
+                    pagingType: "full_numbers",
+                    lengthMenu: [[10, 25, 50, 100, 150, -1],[10, 25, 50, 100, 150, "Todo"]],
+                    language: {
+                        sProcessing: "Procesando...",
+                        sLengthMenu: "Mostrar _MENU_ registros",
+                        sZeroRecords: "No se encontraron resultados",
+                        sEmptyTable: "Ningún dato disponible en esta tabla",
+                        sInfo: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                        sInfoEmpty: "Mostrando 0 a 0 de 0 registros",
+                        sInfoFiltered: "(filtrado de _MAX_ registros)",
+                        sSearch: "Buscar:",
+                        oPaginate: { sFirst: "Primero", sLast: "Último", sNext: "Siguiente", sPrevious: "Anterior" },
+                        oAria: { sSortAscending: ": Orden ascendente", sSortDescending: ": Orden descendente" }
+                    },
+                    dom:
+                        "<'row align-items-center'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 text-md-right'f>>" +
+                        "tr" +
+                        "<'row align-items-center'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
+                });
+
+                // Estilitos
+                $('#tabla_length select').addClass('form-control form-control-sm');
+                $('#tabla_filter input').addClass('form-control form-control-sm').css('display','inline-block');
+            }
+
+            function cargarTabla() {
+                $('#tablaDatatable').load(ruta, function() {
+                    // AQUI debe existir exactamente un <table id="tabla"> en la parcial
+                    initDataTable();
+                });
+            }
+
+            // Primera carga
+            cargarTabla();
+
+            // Exponer recarga para tus flujos (crear/editar)
+            window.recargar = function () {
+                cargarTabla();
+            };
         });
     </script>
 
-    <script>
 
-        function recargar(){
-            var ruta = "{{ url('/admin/permisos/tabla') }}";
-            $('#tablaDatatable').load(ruta);
-        }
+    <script>
 
         function modalAgregar(){
             document.getElementById("formulario-nuevo").reset();
             $('#modalAgregar').modal('show');
         }
 
-        // nuevo usuario de sistema
         function nuevoUsuario(){
 
             var nombre = document.getElementById('nombre-nuevo').value;
             var usuario = document.getElementById('usuario-nuevo').value;
             var password = document.getElementById('password-nuevo').value;
             var idrol = document.getElementById('rol-nuevo').value;
-
-
 
             if(nombre === ''){
                 toastr.error('Nombre es requerido');
@@ -264,7 +307,7 @@
             formData.append('password', password);
             formData.append('rol', idrol);
 
-            axios.post(url+'/permisos/nuevo-usuario', formData, {
+            axios.post('/admin/permisos/nuevo-usuario', formData, {
             })
                 .then((response) => {
                     closeLoading()
@@ -287,21 +330,21 @@
                 });
         }
 
-        // información de usuario
         function verInformacion(id){
             openLoading();
             document.getElementById("formulario-editar").reset();
 
-            axios.post(url+'/permisos/info-usuario',{
+            axios.post('/admin/permisos/info-usuario',{
                 'id': id
             })
                 .then((response) => {
                     closeLoading();
+
                     if(response.data.success === 1){
                         $('#modalEditar').modal('show');
                         $('#id-editar').val(response.data.info.id);
                         $('#nombre-editar').val(response.data.info.nombre);
-                        $('#usuario-editar').val(response.data.info.usuario);
+                        $('#usuario-editar').val(response.data.info.email);
 
                         document.getElementById("rol-editar").options.length = 0;
 
@@ -314,33 +357,25 @@
                             }
                         });
 
-                        if(response.data.info.activo === 0){
-                            $("#toggle-editar").prop("checked", false);
-                        }else{
-                            $("#toggle-editar").prop("checked", true);
-                        }
 
                     }else{
-                        toastr.error('Información no encontrado');
+                        toastr.error('Información no encontrado.');
                     }
 
                 })
                 .catch((error) => {
                     closeLoading()
-                    toastr.error('Información no encontrado');
+                    console.log(error);
+                    toastr.error('Información no encontrado..');
                 });
         }
 
-        // actualizar el usuario
         function actualizar(){
             var id = document.getElementById('id-editar').value;
             var nombre = document.getElementById('nombre-editar').value;
             var usuario = document.getElementById('usuario-editar').value;
             var password = document.getElementById('password-editar').value;
             var idrol = document.getElementById('rol-editar').value;
-
-            var t = document.getElementById('toggle-editar').checked;
-            var toggle = t ? 1 : 0;
 
 
             if(nombre === ''){
@@ -381,10 +416,9 @@
             formData.append('nombre', nombre);
             formData.append('usuario', usuario);
             formData.append('password', password);
-            formData.append('toggle', toggle);
             formData.append('rol', idrol);
 
-            axios.post(url+'/permisos/editar-usuario', formData, {
+            axios.post('/admin/permisos/editar-usuario', formData, {
             })
                 .then((response) => {
                     closeLoading()
@@ -408,8 +442,26 @@
         }
 
 
-
     </script>
 
 
-@stop
+@endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

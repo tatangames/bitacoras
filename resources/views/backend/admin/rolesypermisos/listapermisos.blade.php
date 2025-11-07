@@ -1,145 +1,216 @@
-@extends('backend.menus.superior')
+@extends('adminlte::page')
 
-@section('content-admin-css')
-    <link href="{{ asset('css/adminlte.min.css') }}" type="text/css" rel="stylesheet" />
-    <link href="{{ asset('css/dataTables.bootstrap4.css') }}" type="text/css" rel="stylesheet" />
-    <link href="{{ asset('css/toastr.min.css') }}" type="text/css" rel="stylesheet" />
-    <link href="{{ asset('css/buttons_estilo.css') }}" rel="stylesheet">
+@section('title', 'Dashboard')
+
+@section('content_header')
+    <h1>Todos los Permisos</h1>
 @stop
+{{-- Activa plugins que necesitas --}}
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
+@section('plugins.Toastr', true)
 
-<style>
-    table{
-        /*Ajustar tablas*/
-        table-layout:fixed;
-    }
-</style>
+@section('content_top_nav_right')
+    <li class="nav-item dropdown">
+        <a href="#" class="nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-cogs"></i>
+            <span class="d-none d-md-inline">{{ Auth::user()->nombre ?? 'Usuario' }}</span>
+        </a>
 
-<div id="divcontenedor" style="display: none">
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="col-sm-12">
-                <h1>Todos los Permisos</h1>
-            </div>
-            <br>
-            <button type="button" style="font-weight: bold; background-color: #28a745; color: white !important;" onclick="modalAgregar()" class="button button-3d button-rounded button-pill button-small">
-                <i class="fas fa-pencil-alt"></i>
-                Agregar Permiso
-            </button>
+        <div class="dropdown-menu dropdown-menu-right">
+            <a href="{{ route('admin.perfil') }}" class="dropdown-item">
+                <i class="fas fa-user mr-2"></i> Editar Perfil
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <form action="{{ route('admin.logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="dropdown-item">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
+                </button>
+            </form>
         </div>
-    </section>
+    </li>
+@endsection
+@section('content')
 
-    <section class="content">
-        <div class="container-fluid">
-            <div class="card card-success">
-                <div class="card-header">
-                    <h3 class="card-title">Lista</h3>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div id="tablaDatatable"></div>
+    <div id="divcontenedor">
+        <section class="content-header">
+            <div class="container-fluid">
+                <button type="button" onclick="modalAgregar()" class="btn btn-success btn-sm">
+                    <i class="fas fa-pencil-alt"></i>
+                    Agregar Permiso
+                </button>
+            </div>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">Lista</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="tablaDatatable"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
 
-    <div class="modal fade" id="modalAgregar">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Nuevo Permiso</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="formulario-nuevo">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12">
+        <div class="modal fade" id="modalAgregar">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Nuevo Permiso</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formulario-nuevo">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
 
-                                    <p>Esta acción agregara el "Permiso", pero se debera modificar el sistema para su utilización.</p>
+                                        <p>Esta acción agregara el "Permiso", pero se debera modificar el sistema para su utilización.</p>
 
-                                    <div class="form-group">
-                                        <label>Nombre</label>
-                                        <input type="text" maxlength="200" autocomplete="off" class="form-control" id="nombre-nuevo" placeholder="Nombre">
+                                        <div class="form-group">
+                                            <label>Nombre</label>
+                                            <input type="text" maxlength="200" autocomplete="off" class="form-control" id="nombre-nuevo" placeholder="Nombre">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Descripción</label>
+                                            <input type="text" maxlength="200" autocomplete="off" class="form-control" id="descripcion-nuevo" placeholder="Descripción">
+                                        </div>
+
                                     </div>
-
-                                    <div class="form-group">
-                                        <label>Descripción</label>
-                                        <input type="text" maxlength="200" autocomplete="off" class="form-control" id="descripcion-nuevo" placeholder="Descripción">
-                                    </div>
-
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-success" onclick="agregarPermiso()">Agregar</button>
+                    </div>
                 </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                    <button type="button" style="font-weight: bold; background-color: #28a745; color: white !important;" class="button button-3d button-rounded button-pill button-small" onclick="agregarPermiso()">Agregar</button>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalBorrar">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Borrar Permiso Global</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formulario-borrar">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <p>Esta acción eliminara el Permiso en "Todos los Roles."</p>
+
+                                        <div class="form-group">
+                                            <input type="hidden" id="idborrar">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-danger" onclick="borrar()">Borrar</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="modalBorrar">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Borrar Permiso Global</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="formulario-borrar">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12">
 
-                                    <p>Esta acción eliminara el Permiso en "Todos los Roles."</p>
+@stop
 
-                                    <div class="form-group">
-                                        <input type="hidden" id="idborrar">
-                                    </div>
 
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                    <button type="button" style="font-weight: bold; background-color: #ff4351; color: white !important;" class="button button-3d button-rounded button-pill button-small" onclick="borrar()">Borrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-@extends('backend.menus.footerjs')
-@section('archivos-js')
-
-    <script src="{{ asset('js/jquery.dataTables.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('js/dataTables.bootstrap4.js') }}" type="text/javascript"></script>
-
-    <script src="{{ asset('js/toastr.min.js') }}" type="text/javascript"></script>
+@section('js')
     <script src="{{ asset('js/axios.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('js/sweetalert2.all.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('js/alertaPersonalizada.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/toastr.min.js') }}"></script>
+    <script src="{{ asset('js/alertaPersonalizada.js') }}"></script>
 
-    <!-- incluir tabla -->
-    <script type="text/javascript">
-        $(document).ready(function(){
-            var ruta = "{{ url('/admin/roles/permisos-todos/tabla') }}";
-            $('#tablaDatatable').load(ruta);
-            document.getElementById("divcontenedor").style.display = "block";
+    <script>
+        $(function () {
+            const ruta = "{{ url('/admin/roles/permisos-todos/tabla') }}";
+
+            function initDataTable() {
+                // Si ya hay instancia, destrúyela antes de re-crear
+                if ($.fn.DataTable.isDataTable('#tabla')) {
+                    $('#tabla').DataTable().destroy();
+                }
+
+                // Inicializa
+                $('#tabla').DataTable({
+                    paging: true,
+                    lengthChange: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    autoWidth: false,
+                    responsive: true,
+                    pagingType: "full_numbers",
+                    lengthMenu: [[10, 25, 50, 100, 150, -1],[10, 25, 50, 100, 150, "Todo"]],
+                    language: {
+                        sProcessing: "Procesando...",
+                        sLengthMenu: "Mostrar _MENU_ registros",
+                        sZeroRecords: "No se encontraron resultados",
+                        sEmptyTable: "Ningún dato disponible en esta tabla",
+                        sInfo: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                        sInfoEmpty: "Mostrando 0 a 0 de 0 registros",
+                        sInfoFiltered: "(filtrado de _MAX_ registros)",
+                        sSearch: "Buscar:",
+                        oPaginate: { sFirst: "Primero", sLast: "Último", sNext: "Siguiente", sPrevious: "Anterior" },
+                        oAria: { sSortAscending: ": Orden ascendente", sSortDescending: ": Orden descendente" }
+                    },
+                    dom:
+                        "<'row align-items-center'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 text-md-right'f>>" +
+                        "tr" +
+                        "<'row align-items-center'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
+                });
+
+                // Estilitos
+                $('#tabla_length select').addClass('form-control form-control-sm');
+                $('#tabla_filter input').addClass('form-control form-control-sm').css('display','inline-block');
+            }
+
+            function cargarTabla() {
+                $('#tablaDatatable').load(ruta, function() {
+                    // AQUI debe existir exactamente un <table id="tabla"> en la parcial
+                    initDataTable();
+                });
+            }
+
+            // Primera carga
+            cargarTabla();
+
+            // Exponer recarga para tus flujos (crear/editar)
+            window.recargar = function () {
+                cargarTabla();
+            };
         });
     </script>
+
+
+
 
     <script>
 
@@ -176,7 +247,7 @@
             formData.append('nombre', nombre);
             formData.append('descripcion', descripcion);
 
-            axios.post(url+'/permisos/extra-nuevo', formData, {
+            axios.post('/admin/permisos/extra-nuevo',formData,  {
             })
                 .then((response) => {
                     closeLoading()
@@ -215,7 +286,7 @@
             var formData = new FormData();
             formData.append('idpermiso', idpermiso);
 
-            axios.post(url+'/permisos/extra-borrar', formData, {
+            axios.post('/admin/permisos/extra-borrar', formData, {
             })
                 .then((response) => {
                     closeLoading()
@@ -234,13 +305,9 @@
                 });
         }
 
-        function recargar(){
-            var ruta = "{{ url('/admin/roles/permisos-todos/tabla') }}";
-            $('#tablaDatatable').load(ruta);
-        }
 
     </script>
 
 
+@endsection
 
-@stop

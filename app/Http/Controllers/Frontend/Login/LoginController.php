@@ -44,8 +44,14 @@ class LoginController extends Controller
                 return ['success' => 5];
             }
 
+            // si ya habia iniciado sesion, redireccionar
+            if (Auth::check()) {
+                return ['success'=> 1, 'ruta'=> route('admin.panel')];
+            }
+
             if(Auth::attempt(['usuario' => $request->usuario, 'password' => $request->password])) {
 
+                $request->session()->regenerate();
                 return ['success'=> 1, 'ruta'=> route('admin.panel')];
             }else{
                 return ['success' => 2]; // password incorrecta
@@ -58,6 +64,9 @@ class LoginController extends Controller
     // cerrar sesión
     public function logout(Request $request){
         Auth::logout();
-        return redirect('/');
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 }

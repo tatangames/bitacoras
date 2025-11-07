@@ -18,19 +18,14 @@ class ControlController extends Controller
 
         // ADMINISTRADOR SISTEMA
         if($user->hasRole('admin')){
-            $ruta = 'admin.roles.index';
-        }
-        else if($user->hasRole('usuario')){
-            $ruta = 'admin.registro.novedades.acceso';
-        }
-        else{
-            // no tiene ningun permiso de vista, redirigir a pantalla sin permisos
-            $ruta = 'no.permisos.index';
+            return redirect()->route('admin.roles.index');
         }
 
-        $titulo = "Bitcoras - Control";
+        if($user->hasRole('usuario')){
+            return redirect()->route('admin.registro.novedades.acceso');
+        }
 
-        return view('backend.index', compact( 'ruta', 'user', 'titulo'));
+        return redirect()->route('no.permisos.index');
     }
 
     // redirecciona a vista sin permisos
