@@ -10,9 +10,13 @@ function closeLoading(){
     Swal.close();
 }
 
+function toastMensaje(tipo, mensaje){
+    toastr[tipo](mensaje)
+}
+
 function alertaMensaje(tipo, titulo, mensaje){
 
-    // tipos: warning, success, info, question
+    // tipos: warning, success, info
 
     Swal.fire({
         heightAuto: false,

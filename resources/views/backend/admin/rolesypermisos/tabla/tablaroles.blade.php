@@ -23,4 +23,3 @@
     @endforeach
     </tbody>
 </table>
-

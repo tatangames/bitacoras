@@ -114,7 +114,7 @@ return [
         'mode' => 'fullscreen',
         'img' => [
             'path' => 'images/logosistema.png',
-            'alt' => 'AdminLTE Preloader Image',
+            'alt' => 'Bitacoras',
             'effect' => 'animation__shake',
             'width' => 60,
             'height' => 60,
@@ -257,7 +257,7 @@ return [
     */
 
     'use_route_url' => false,
-    'dashboard_url' => 'home',
+    'dashboard_url' => '/panel',
     'logout_url' => 'logout',
     'login_url' => 'login',
     'register_url' => 'register',
@@ -300,19 +300,16 @@ return [
 
     'menu' => [
         // Navbar items:
-        /*[
-            'type' => 'navbar-search',
-            'text' => 'search',
-            'topnav_right' => true,
-        ],*/
         [
             'type' => 'fullscreen-widget',
             'topnav_right' => false,
         ],
+
+        // Sidebar items:
         [
             'text'    => 'Roles y Permisos',
             'icon'    => 'fas fa-pen-alt',
-            'can'     => 'sidebar.roles.y.permisos',
+            'can'     => 'admin.sidebar.roles.y.permisos',
             'submenu' => [
                 [
                     'text' => 'Roles',
@@ -326,6 +323,84 @@ return [
                 ],
             ],
         ],
+
+        [
+            'text'  => 'Novedades y Acceso',
+            'icon'  => 'fas fa-file-alt',
+            'route' => 'admin.registro.novedades.acceso.index',
+            'can'   => 'editor.sidebar.dashboard',
+        ],
+
+        [
+            'text'  => 'Mantenimiento',
+            'icon'  => 'fas fa-file-alt',
+            'route' => 'admin.registro.mantenimiento.index',
+            'can'   => 'editor.sidebar.dashboard',
+        ],
+
+        [
+            'text'  => 'Incidencias',
+            'icon'  => 'fas fa-file-alt',
+            'route' => 'admin.registro.incidencias.index',
+            'can'   => 'editor.sidebar.dashboard',
+        ],
+
+        [
+            'text'  => 'Soporte',
+            'icon'  => 'fas fa-file-alt',
+            'route' => 'admin.registro.soporte.index',
+            'can'   => 'editor.sidebar.dashboard',
+        ],
+
+        [
+            'text'    => 'Listado',
+            'icon'    => 'fas fa-pen-alt',
+            'can'     => 'editor.sidebar.dashboard',
+            'submenu' => [
+                [
+                    'text' => 'Lista - Acceso y Novedades',
+                    'icon' => 'far fa-circle',
+                    'route' => 'admin.listado.acceso.novedades',
+                ],
+                [
+                    'text' => 'Lista - Mantenimientos',
+                    'icon' => 'far fa-circle',
+                    'route' => 'admin.listado.mantenimientos',
+                ],
+                [
+                    'text' => 'Lista - Incidencias',
+                    'icon' => 'far fa-circle',
+                    'route' => 'admin.listado.incidencias',
+                ],
+                [
+                    'text' => 'Lista - Soporte',
+                    'icon' => 'far fa-circle',
+                    'route' => 'admin.listado.soporte',
+                ],
+
+            ],
+        ],
+
+
+
+        [
+            'text'    => 'Configuración',
+            'icon'    => 'fas fa-pen-alt',
+            'can'     => 'admin.sidebar.roles.y.permisos',
+            'submenu' => [
+                [
+                    'text' => 'Unidades',
+                    'icon' => 'far fa-circle',
+                    'route' => 'admin.unidad.index',
+                ],
+
+
+
+
+            ],
+        ],
+
+
 
 
     ],

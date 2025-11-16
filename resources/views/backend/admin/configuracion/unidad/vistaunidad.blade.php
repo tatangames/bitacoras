@@ -1,28 +1,65 @@
-@extends('backend.menus.superior')
+@extends('adminlte::page')
 
-@section('content-admin-css')
-    <link href="{{ asset('css/adminlte.min.css') }}" type="text/css" rel="stylesheet" />
-    <link href="{{ asset('css/dataTables.bootstrap4.css') }}" type="text/css" rel="stylesheet" />
-    <link href="{{ asset('css/toastr.min.css') }}" type="text/css" rel="stylesheet" />
-    <link href="{{ asset('css/buttons_estilo.css') }}" rel="stylesheet">
+@section('title', 'Unidades')
+
+@section('content_header')
+    <h1>Unidades</h1>
+@stop
+{{-- Activa plugins que necesitas --}}
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
+@section('plugins.Sweetalert2', true)
+
+@include('backend.urlglobal')
+
+@section('content_top_nav_right')
+    <link href="{{ asset('css/toastr.min.css') }}" type="text/css" rel="stylesheet"/>
     <link href="{{ asset('css/select2.min.css') }}" type="text/css" rel="stylesheet">
     <link href="{{ asset('css/select2-bootstrap-5-theme.min.css') }}" type="text/css" rel="stylesheet">
-@stop
 
-<style>
-    table{
-        /*Ajustar tablas*/
-        table-layout:fixed;
-    }
-</style>
+    <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#" title="Tema">
+            <i id="theme-icon" class="fas fa-sun"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right p-0" style="min-width: 180px">
+            <a class="dropdown-item d-flex align-items-center" href="#" data-theme="dark">
+                <i class="far fa-moon mr-2"></i> Dark
+            </a>
+            <a class="dropdown-item d-flex align-items-center" href="#" data-theme="light">
+                <i class="far fa-sun mr-2"></i> Light
+            </a>
+        </div>
+    </li>
 
-<div id="divcontenedor" style="display: none">
+    <li class="nav-item dropdown">
+        <a href="#" class="nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-cogs"></i>
+            <span class="d-none d-md-inline">{{ Auth::guard('admin')->user()->nombre }}</span>
+        </a>
+
+        <div class="dropdown-menu dropdown-menu-right">
+            <a href="{{ route('admin.perfil') }}" class="dropdown-item">
+                <i class="fas fa-user mr-2"></i> Editar Perfil
+            </a>
+
+            <form action="{{ route('admin.logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="dropdown-item">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
+                </button>
+            </form>
+        </div>
+    </li>
+@endsection
+
+@section('content')
 
     <section class="content-header">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <button type="button" style="font-weight: bold; background-color: #2156af; color: white !important;" onclick="modalAgregar()"
-                        class="button button-3d button-rounded button-pill button-small">
+                <button type="button"
+                        onclick="modalAgregar()"
+                        class="btn btn-primary btn-sm">
                     <i class="fas fa-pencil-alt"></i>
                     Nueva Unidad
                 </button>
@@ -56,7 +93,7 @@
     </section>
 
     <div class="modal fade" id="modalAgregar">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog ">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Nueva Unidad</h4>
@@ -72,7 +109,8 @@
 
                                     <div class="form-group">
                                         <label>Unidad</label>
-                                        <input type="text" maxlength="100" class="form-control" id="unidad-nuevo" autocomplete="off">
+                                        <input type="text" maxlength="100" class="form-control" id="unidad-nuevo"
+                                               autocomplete="off">
                                     </div>
 
                                 </div>
@@ -82,7 +120,9 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                    <button type="button" style="font-weight: bold; background-color: #2156af; color: white !important;" class="button button-rounded button-pill button-small" onclick="nuevo()">Guardar</button>
+                    <button type="button"
+                            class="btn btn-success btn-sm" onclick="nuevo()">Guardar
+                    </button>
                 </div>
             </div>
         </div>
@@ -90,7 +130,7 @@
 
     <!-- modal editar -->
     <div class="modal fade" id="modalEditar">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Editar Unidad</h4>
@@ -110,7 +150,8 @@
 
                                     <div class="form-group">
                                         <label>Unidad</label>
-                                        <input type="text" maxlength="100" class="form-control" id="unidad-editar" autocomplete="off">
+                                        <input type="text" maxlength="100" class="form-control" id="unidad-editar"
+                                               autocomplete="off">
                                     </div>
 
                                 </div>
@@ -120,55 +161,101 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                    <button type="button" style="font-weight: bold; background-color: #28a745; color: white !important;" class="button button-rounded button-pill button-small" onclick="editar()">Actualizar</button>
+                    <button type="button"
+                            class="btn btn-success btn-sm" onclick="editar()">Actualizar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+@stop
 
 
 
-</div>
-
-
-@extends('backend.menus.footerjs')
-@section('archivos-js')
-
-    <script src="{{ asset('js/jquery.dataTables.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('js/dataTables.bootstrap4.js') }}" type="text/javascript"></script>
-
+@section('js')
     <script src="{{ asset('js/toastr.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/axios.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('js/alertaPersonalizada.js') }}"></script>
     <script src="{{ asset('js/select2.min.js') }}" type="text/javascript"></script>
+    <script>
+        $(function () {
+            const ruta = "{{ url('/admin/unidad/tabla') }}";
 
-    <script type="text/javascript">
-        $(document).ready(function(){
-            var ruta = "{{ URL::to('/admin/unidad/tabla') }}";
-            $('#tablaDatatable').load(ruta);
+            function initDataTable() {
+                // Si ya hay instancia, destrúyela antes de re-crear
+                if ($.fn.DataTable.isDataTable('#tabla')) {
+                    $('#tabla').DataTable().destroy();
+                }
 
-            document.getElementById("divcontenedor").style.display = "block";
+                // Inicializa
+                $('#tabla').DataTable({
+                    paging: true,
+                    lengthChange: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    autoWidth: false,
+                    responsive: true,
+                    pagingType: "full_numbers",
+                    lengthMenu: [[100, 150, -1], [100, 150, "Todo"]],
+                    language: {
+                        sProcessing: "Procesando...",
+                        sLengthMenu: "Mostrar _MENU_ registros",
+                        sZeroRecords: "No se encontraron resultados",
+                        sEmptyTable: "Ningún dato disponible en esta tabla",
+                        sInfo: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                        sInfoEmpty: "Mostrando 0 a 0 de 0 registros",
+                        sInfoFiltered: "(filtrado de _MAX_ registros)",
+                        sSearch: "Buscar:",
+                        oPaginate: {sFirst: "Primero", sLast: "Último", sNext: "Siguiente", sPrevious: "Anterior"},
+                        oAria: {sSortAscending: ": Orden ascendente", sSortDescending: ": Orden descendente"}
+                    },
+                    dom:
+                        "<'row align-items-center'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 text-md-right'f>>" +
+                        "tr" +
+                        "<'row align-items-center'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
+                });
+
+                // Estilitos
+                $('#tabla_length select').addClass('form-control form-control-sm');
+                $('#tabla_filter input').addClass('form-control form-control-sm').css('display', 'inline-block');
+            }
+
+            function cargarTabla() {
+                $('#tablaDatatable').load(ruta, function () {
+                    // AQUI debe existir exactamente un <table id="tabla"> en la parcial
+                    initDataTable();
+                });
+            }
+
+            // Primera carga
+            cargarTabla();
+
+            // Exponer recarga para tus flujos (crear/editar)
+            window.recargar = function () {
+                cargarTabla();
+            };
         });
     </script>
 
+
     <script>
 
-        function recargar(){
+        function recargar() {
             var ruta = "{{ url('/admin/unidad/tabla') }}";
             $('#tablaDatatable').load(ruta);
         }
 
-        function modalAgregar(){
+        function modalAgregar() {
             document.getElementById("formulario-nuevo").reset();
 
             $('#modalAgregar').modal('show');
         }
 
-        function nuevo(){
+        function nuevo() {
             var nombre = document.getElementById('unidad-nuevo').value;
 
-            if(nombre === ''){
+            if (nombre === '') {
                 toastr.error('Nombre es requerido');
                 return;
             }
@@ -177,16 +264,14 @@
             var formData = new FormData();
             formData.append('nombre', nombre);
 
-            axios.post(url+'/unidad/nuevo', formData, {
-            })
+            axios.post(urlAdmin + '/admin/unidad/nuevo', formData, {})
                 .then((response) => {
                     closeLoading();
-                    if(response.data.success === 1){
+                    if (response.data.success === 1) {
                         toastr.success('Registrado correctamente');
                         $('#modalAgregar').modal('hide');
                         recargar();
-                    }
-                    else {
+                    } else {
                         toastr.error('Error al registrar');
                     }
                 })
@@ -196,21 +281,21 @@
                 });
         }
 
-        function informacion(id){
+        function informacion(id) {
             openLoading();
             document.getElementById("formulario-editar").reset();
 
-            axios.post(url+'/unidad/informacion',{
+            axios.post(urlAdmin + '/admin/unidad/informacion', {
                 'id': id
             })
                 .then((response) => {
                     closeLoading();
-                    if(response.data.success === 1){
+                    if (response.data.success === 1) {
                         $('#modalEditar').modal('show');
                         $('#id-editar').val(id);
                         $('#unidad-editar').val(response.data.info.nombre);
 
-                    }else{
+                    } else {
                         toastr.error('Información no encontrada');
                     }
                 })
@@ -220,11 +305,11 @@
                 });
         }
 
-        function editar(){
+        function editar() {
             var id = document.getElementById('id-editar').value;
             var nombre = document.getElementById('unidad-editar').value;
 
-            if(nombre === ''){
+            if (nombre === '') {
                 toastr.error('Nombre es requerido');
                 return;
             }
@@ -234,31 +319,120 @@
             formData.append('id', id);
             formData.append('nombre', nombre);
 
-            axios.post(url+'/unidad/editar', formData, {
-            })
+            axios.post(urlAdmin + '/admin/unidad/editar', formData, {})
                 .then((response) => {
                     closeLoading();
 
-                    if(response.data.success === 1){
+                    if (response.data.success === 1) {
                         toastr.success('Actualizado correctamente');
                         $('#modalEditar').modal('hide');
                         recargar();
-                    }
-                    else {
+                    } else {
                         toastr.error('Error al actualizar');
                     }
-
                 })
                 .catch((error) => {
                     toastr.error('Error al actualizar');
                     closeLoading();
                 });
         }
-
-
-
-
     </script>
 
 
+    <script>
+        (function () {
+            // ===== Config inicial =====
+            const SERVER_DEFAULT = {{ $temaPredeterminado }}; // 0 = light, 1 = dark
+            const iconEl = document.getElementById('theme-icon');
+
+            // CSRF para axios
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            if (token) axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+
+            // ===== Funciones =====
+            function applyTheme(mode) {
+                const dark = mode === 'dark';
+
+                // AdminLTE v3
+                document.body.classList.toggle('dark-mode', dark);
+
+                // AdminLTE v4
+                document.documentElement.setAttribute('data-bs-theme', dark ? 'dark' : 'light');
+
+                // Icono
+                if (iconEl) {
+                    iconEl.classList.remove('fa-sun', 'fa-moon');
+                    iconEl.classList.add(dark ? 'fa-moon' : 'fa-sun');
+                }
+            }
+
+            function themeToInt(mode) {
+                return mode === 'dark' ? 1 : 0;
+            }
+
+            function intToTheme(v) {
+                return v === 1 ? 'dark' : 'light';
+            }
+
+            // ===== Aplicar tema inicial desde servidor =====
+            applyTheme(intToTheme(SERVER_DEFAULT));
+
+            // ===== Manejo de clicks y POST a backend =====
+            let saving = false;
+
+            document.addEventListener('click', async (e) => {
+                const a = e.target.closest('.dropdown-item[data-theme]');
+                if (!a) return;
+                e.preventDefault();
+                if (saving) return;
+
+                const selectedMode = a.dataset.theme; // 'dark' | 'light'
+                const newValue = themeToInt(selectedMode);
+
+                // Modo optimista: aplicar de una vez
+                const previousMode = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light';
+                applyTheme(selectedMode);
+
+                try {
+                    saving = true;
+                    await axios.post(urlAdmin + '/admin/actualizar/tema', {tema: newValue});
+                    // Si querés, mostrar un toast:
+                    if (window.toastr) toastr.success('Tema actualizado');
+                } catch (err) {
+                    // Revertir si falló
+                    applyTheme(previousMode);
+                    if (window.toastr) {
+                        toastr.error('No se pudo actualizar el tema');
+                    } else {
+                        alert('No se pudo actualizar el tema');
+                    }
+                } finally {
+                    saving = false;
+                }
+            });
+        })();
+    </script>
+
 @endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

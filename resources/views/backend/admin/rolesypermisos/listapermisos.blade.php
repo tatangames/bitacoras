@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Todos los Permisos')
 
 @section('content_header')
     <h1>Todos los Permisos</h1>
@@ -8,13 +8,20 @@
 {{-- Activa plugins que necesitas --}}
 @section('plugins.Datatables', true)
 @section('plugins.DatatablesPlugins', true)
-@section('plugins.Toastr', true)
+@section('plugins.Sweetalert2', true)
+
+@include('backend.urlglobal')
 
 @section('content_top_nav_right')
+
+    <link href="{{ asset('css/toastr.min.css') }}" type="text/css" rel="stylesheet" />
+
+
+
     <li class="nav-item dropdown">
         <a href="#" class="nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-cogs"></i>
-            <span class="d-none d-md-inline">{{ Auth::user()->nombre ?? 'Usuario' }}</span>
+            <span class="d-none d-md-inline">{{ Auth::guard('admin')->user()->nombre ?? 'Usuario' }}</span>
         </a>
 
         <div class="dropdown-menu dropdown-menu-right">
@@ -144,21 +151,16 @@
 
 
 @section('js')
+    <script src="{{ asset('js/toastr.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/axios.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('js/toastr.min.js') }}"></script>
     <script src="{{ asset('js/alertaPersonalizada.js') }}"></script>
 
     <script>
-        $(function () {
+        $(document).ready(function () {
             const ruta = "{{ url('/admin/roles/permisos-todos/tabla') }}";
 
-            function initDataTable() {
-                // Si ya hay instancia, destrúyela antes de re-crear
-                if ($.fn.DataTable.isDataTable('#tabla')) {
-                    $('#tabla').DataTable().destroy();
-                }
-
-                // Inicializa
+            $('#tablaDatatable').load(ruta, function () {
+                // Inicializar DataTable cuando el HTML ya está en el DOM
                 $('#tabla').DataTable({
                     paging: true,
                     lengthChange: true,
@@ -174,43 +176,28 @@
                         sLengthMenu: "Mostrar _MENU_ registros",
                         sZeroRecords: "No se encontraron resultados",
                         sEmptyTable: "Ningún dato disponible en esta tabla",
-                        sInfo: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                        sInfoEmpty: "Mostrando 0 a 0 de 0 registros",
-                        sInfoFiltered: "(filtrado de _MAX_ registros)",
+                        sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                        sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+                        sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
                         sSearch: "Buscar:",
                         oPaginate: { sFirst: "Primero", sLast: "Último", sNext: "Siguiente", sPrevious: "Anterior" },
-                        oAria: { sSortAscending: ": Orden ascendente", sSortDescending: ": Orden descendente" }
+                        oAria: { sSortAscending: ": Activar para ordenar ascendente", sSortDescending: ": Activar para ordenar descendente" }
                     },
+
+                    // 👇 Esto coloca "Mostrar" a la IZQ y "Buscar" a la DER
                     dom:
                         "<'row align-items-center'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 text-md-right'f>>" +
                         "tr" +
                         "<'row align-items-center'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
                 });
 
-                // Estilitos
+                // Opcional: inputs compactos y bonitos
                 $('#tabla_length select').addClass('form-control form-control-sm');
                 $('#tabla_filter input').addClass('form-control form-control-sm').css('display','inline-block');
-            }
+            });
 
-            function cargarTabla() {
-                $('#tablaDatatable').load(ruta, function() {
-                    // AQUI debe existir exactamente un <table id="tabla"> en la parcial
-                    initDataTable();
-                });
-            }
-
-            // Primera carga
-            cargarTabla();
-
-            // Exponer recarga para tus flujos (crear/editar)
-            window.recargar = function () {
-                cargarTabla();
-            };
         });
     </script>
-
-
-
 
     <script>
 
@@ -247,7 +234,7 @@
             formData.append('nombre', nombre);
             formData.append('descripcion', descripcion);
 
-            axios.post('/admin/permisos/extra-nuevo',formData,  {
+            axios.post(urlAdmin+'/admin/permisos/extra-nuevo',formData,  {
             })
                 .then((response) => {
                     closeLoading()
@@ -286,7 +273,7 @@
             var formData = new FormData();
             formData.append('idpermiso', idpermiso);
 
-            axios.post('/admin/permisos/extra-borrar', formData, {
+            axios.post(urlAdmin+'/admin/permisos/extra-borrar', formData, {
             })
                 .then((response) => {
                     closeLoading()
@@ -305,8 +292,90 @@
                 });
         }
 
+        function recargar(){
+            var ruta = "{{ url('/admin/roles/permisos-todos/tabla') }}";
+            $('#tablaDatatable').load(ruta);
+        }
 
     </script>
+
+
+
+    <script>
+        (function () {
+            // ===== Config inicial =====
+            const SERVER_DEFAULT = {{ $temaPredeterminado }}; // 0 = light, 1 = dark
+            const iconEl = document.getElementById('theme-icon');
+
+            // CSRF para axios
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            if (token) axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+
+            // ===== Funciones =====
+            function applyTheme(mode) {
+                const dark = mode === 'dark';
+
+                // AdminLTE v3
+                document.body.classList.toggle('dark-mode', dark);
+
+                // AdminLTE v4
+                document.documentElement.setAttribute('data-bs-theme', dark ? 'dark' : 'light');
+
+                // Icono
+                if (iconEl) {
+                    iconEl.classList.remove('fa-sun', 'fa-moon');
+                    iconEl.classList.add(dark ? 'fa-moon' : 'fa-sun');
+                }
+            }
+
+            function themeToInt(mode) {
+                return mode === 'dark' ? 1 : 0;
+            }
+
+            function intToTheme(v) {
+                return v === 1 ? 'dark' : 'light';
+            }
+
+            // ===== Aplicar tema inicial desde servidor =====
+            applyTheme(intToTheme(SERVER_DEFAULT));
+
+            // ===== Manejo de clicks y POST a backend =====
+            let saving = false;
+
+            document.addEventListener('click', async (e) => {
+                const a = e.target.closest('.dropdown-item[data-theme]');
+                if (!a) return;
+                e.preventDefault();
+                if (saving) return;
+
+                const selectedMode = a.dataset.theme; // 'dark' | 'light'
+                const newValue = themeToInt(selectedMode);
+
+                // Modo optimista: aplicar de una vez
+                const previousMode = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light';
+                applyTheme(selectedMode);
+
+                try {
+                    saving = true;
+                    await axios.post(urlAdmin+'/admin/actualizar/tema', { tema: newValue });
+                    // Si querés, mostrar un toast:
+                    if (window.toastr) toastr.success('Tema actualizado');
+                } catch (err) {
+                    // Revertir si falló
+                    applyTheme(previousMode);
+                    if (window.toastr) {
+                        toastr.error('No se pudo actualizar el tema');
+                    } else {
+                        alert('No se pudo actualizar el tema');
+                    }
+                } finally {
+                    saving = false;
+                }
+            });
+        })();
+    </script>
+
+
 
 
 @endsection

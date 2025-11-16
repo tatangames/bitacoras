@@ -1,39 +1,23 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Frontend\Login\LoginController;
-use App\Http\Controllers\Controles\ControlController;
-use App\Http\Controllers\Backend\Roles\RolesController;
-use App\Http\Controllers\Backend\Roles\PermisoController;
-use App\Http\Controllers\Backend\Perfil\PerfilController;
-use App\Http\Controllers\Backend\Sistema\SistemaController;
-use App\Http\Controllers\Backend\Sistema\BitacorasController;
+use App\Http\Controllers\Sistema\LoginController;
+use App\Http\Controllers\Sistema\ControlController;
+use App\Http\Controllers\Sistema\RolesController;
+use App\Http\Controllers\Sistema\PerfilController;
+use App\Http\Controllers\Sistema\PermisoController;
+use App\Http\Controllers\Sistema\ConfiguracionController;
+use App\Http\Controllers\Sistema\BitacorasController;
 
 
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
-
-Route::get('/', [LoginController::class,'index'])->name('login');
-
-Route::post('/admin/login', [LoginController::class, 'login']);
-Route::post('/admin/logout', [LoginController::class, 'logout'])->name('admin.logout');
+Route::get('/', [LoginController::class,'vistaLoginForm'])->name('login.admin');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('admin.logout');
 
 // --- CONTROL WEB ---
-
 Route::get('/panel', [ControlController::class,'indexRedireccionamiento'])->name('admin.panel');
 
 // --- ROLES ---
-
 Route::get('/admin/roles/index', [RolesController::class,'index'])->name('admin.roles.index');
 Route::get('/admin/roles/tabla', [RolesController::class,'tablaRoles']);
 Route::get('/admin/roles/lista/permisos/{id}', [RolesController::class,'vistaPermisos']);
@@ -44,8 +28,7 @@ Route::get('/admin/roles/permisos/lista', [RolesController::class,'listaTodosPer
 Route::get('/admin/roles/permisos-todos/tabla', [RolesController::class,'tablaTodosPermisos']);
 Route::post('/admin/roles/borrar-global', [RolesController::class, 'borrarRolGlobal']);
 
-// --- PERMISOS A USUARIOS ---
-
+// --- PERMISOS ---
 Route::get('/admin/permisos/index', [PermisoController::class,'index'])->name('admin.permisos.index');
 Route::get('/admin/permisos/tabla', [PermisoController::class,'tablaUsuarios']);
 Route::post('/admin/permisos/nuevo-usuario', [PermisoController::class, 'nuevoUsuario']);
@@ -55,67 +38,65 @@ Route::post('/admin/permisos/nuevo-rol', [PermisoController::class, 'nuevoRol'])
 Route::post('/admin/permisos/extra-nuevo', [PermisoController::class, 'nuevoPermisoExtra']);
 Route::post('/admin/permisos/extra-borrar', [PermisoController::class, 'borrarPermisoGlobal']);
 
-// --- PERFIL DE USUARIO ---
+// --- PERFIL ---
 Route::get('/admin/editar-perfil/index', [PerfilController::class,'indexEditarPerfil'])->name('admin.perfil');
 Route::post('/admin/editar-perfil/actualizar', [PerfilController::class, 'editarUsuario']);
 
-// --- SIN PERMISOS VISTA 403 ---
 Route::get('sin-permisos', [ControlController::class,'indexSinPermiso'])->name('no.permisos.index');
 
+// actualizar Tema
+Route::post('/admin/actualizar/tema', [ControlController::class, 'actualizarTema'])->name('admin.tema.update');
 
 
-//  === UNIDAD ===
-Route::get('/admin/unidad/index', [SistemaController::class,'indexUnidad'])->name('admin.unidad.index');
-Route::get('/admin/unidad/tabla', [SistemaController::class,'tablaUnidad']);
-Route::post('/admin/unidad/nuevo', [SistemaController::class,'nuevoUnidad']);
-Route::post('/admin/unidad/informacion', [SistemaController::class,'infoUnidad']);
-Route::post('/admin/unidad/editar', [SistemaController::class,'actualizarUnidad']);
 
 
-// ACCESO Y NOVEDADES
-// vista para registrar uno nuevo
-Route::get('/admin/registro/novedades-acceso/index', [BitacorasController::class,'registroNovedadesAcceso'])->name('admin.registro.novedades.acceso');
-// guardar registro
+// === UNIDAD ===
+Route::get('/admin/unidad/index', [ConfiguracionController::class,'indexUnidad'])->name('admin.unidad.index');
+Route::get('/admin/unidad/tabla', [ConfiguracionController::class,'tablaUnidad']);
+Route::post('/admin/unidad/nuevo', [ConfiguracionController::class,'nuevoUnidad']);
+Route::post('/admin/unidad/informacion', [ConfiguracionController::class,'informacionUnidad']);
+Route::post('/admin/unidad/editar', [ConfiguracionController::class,'actualizarUnidad']);
+
+
+// REGISTRO - ACCESO Y NOVEDADES
+Route::get('/admin/registro/novedades-acceso/index', [BitacorasController::class,'registroNovedadesAcceso'])->name('admin.registro.novedades.acceso.index');
 Route::post('/admin/bitacora-novedades/registro', [BitacorasController::class,'guardarNovedadesAcceso']);
 
-// vista para ver todos
-Route::get('/admin/bitacora/lista/novedadesacceso/index', [BitacorasController::class,'indexBitacoraNovedadesAcceso'])->name('admin.bitacora.acceso.novedades');
+Route::get('/admin/bitacora/lista/novedadesacceso/index', [BitacorasController::class,'indexBitacoraNovedadesAcceso'])->name('admin.listado.acceso.novedades');
 Route::get('/admin/bitacora/lista/novedadesacceso/tabla', [BitacorasController::class,'tablaBitacoraNovedadesAcceso']);
 Route::post('/admin/bitacora/novedadesacceso/informacion', [BitacorasController::class,'informacionNovedadesAcceso']);
 Route::post('/admin/bitacora/novedadesacceso/actualizar', [BitacorasController::class,'actualizarNovedadesAcceso']);
 
 
-// MANTENIMIENTO
-
-Route::get('/admin/registro/mantenimiento/index', [BitacorasController::class,'registroBitacoraMantenimiento'])->name('admin.registro.mantenimiento');
+// REGISTRO - MANTENIMIENTO
+Route::get('/admin/registro/mantenimiento/index', [BitacorasController::class,'registroBitacoraMantenimiento'])->name('admin.registro.mantenimiento.index');
 Route::post('/admin/bitacora-mantenimiento/registro', [BitacorasController::class,'guardarMantenimiento']);
 
-// vista para ver todos
-Route::get('/admin/bitacora/lista/mantenimiento/index', [BitacorasController::class,'indexBitacoraMantenimiento'])->name('admin.bitacora.mantenimientos');
+Route::get('/admin/bitacora/lista/mantenimiento/index', [BitacorasController::class,'indexBitacoraMantenimiento'])->name('admin.listado.mantenimientos');
 Route::get('/admin/bitacora/lista/mantenimiento/tabla', [BitacorasController::class,'tablaBitacoraMantenimiento']);
 Route::post('/admin/bitacora/mantenimiento/informacion', [BitacorasController::class,'informacionMantenimiento']);
 Route::post('/admin/bitacora/mantenimiento/actualizar', [BitacorasController::class,'actualizarMantenimiento']);
 
+// REGISTRO - INCIDENCIAS
+Route::get('/admin/registro/incidencias/index', [BitacorasController::class,'registroBitacoraIncidencias'])->name('admin.registro.incidencias.index');
+Route::post('/admin/bitacora-incidencias/registro', [BitacorasController::class,'guardarIncidencias']);
+
+// vista para ver todos
+Route::get('/admin/bitacora/lista/incidencias/index', [BitacorasController::class,'indexBitacoraIncidencias'])->name('admin.listado.incidencias');
+Route::get('/admin/bitacora/lista/incidencias/tabla', [BitacorasController::class,'tablaBitacoraIncidencias']);
+Route::post('/admin/bitacora/incidencias/informacion', [BitacorasController::class,'informacionIncidencias']);
+Route::post('/admin/bitacora/incidencias/actualizar', [BitacorasController::class,'actualizarIncidencias']);
+
 
 // SOPORTE
 
-Route::get('/admin/registro/soporte/index', [BitacorasController::class,'registroBitacoraSoporte'])->name('admin.registro.soporte');
+Route::get('/admin/registro/soporte/index', [BitacorasController::class,'registroBitacoraSoporte'])->name('admin.registro.soporte.index');
 Route::post('/admin/bitacora-soporte/registro', [BitacorasController::class,'guardarSoporte']);
 
-// vista para ver todos
-Route::get('/admin/bitacora/lista/soporte/index', [BitacorasController::class,'indexBitacoraSoporte'])->name('admin.bitacora.soporte');
+Route::get('/admin/bitacora/lista/soporte/index', [BitacorasController::class,'indexBitacoraSoporte'])->name('admin.listado.soporte');
 Route::get('/admin/bitacora/lista/soporte/tabla', [BitacorasController::class,'tablaBitacoraSoporte']);
 Route::post('/admin/bitacora/soporte/informacion', [BitacorasController::class,'informacionSoporte']);
 Route::post('/admin/bitacora/soporte/actualizar', [BitacorasController::class,'actualizarSoporte']);
 
-// INCIDENCIAS
-Route::get('/admin/registro/incidencias/index', [BitacorasController::class,'registroBitacoraIncidencias'])->name('admin.registro.incidencias');
-Route::post('/admin/bitacora-incidencias/registro', [BitacorasController::class,'guardarIncidencias']);
 
-// vista para ver todos
-Route::get('/admin/bitacora/lista/incidencias/index', [BitacorasController::class,'indexBitacoraIncidencias'])->name('admin.bitacora.listado.incidencias');
-Route::get('/admin/bitacora/lista/incidencias/tabla', [BitacorasController::class,'tablaBitacoraIncidencias']);
-Route::post('/admin/bitacora/incidencias/informacion', [BitacorasController::class,'informacionIncidencias']);
-Route::post('/admin/bitacora/incidencias/actualizar', [BitacorasController::class,'actualizarIncidencias']);
-Route::post('/admin/bitacora/incidencias/borrar', [BitacorasController::class,'borrarIncidencias']);
 
