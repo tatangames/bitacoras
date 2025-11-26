@@ -67,7 +67,7 @@
                             <form id="form-nuevo">
                                 <div class="card-body">
 
-                                    <div class="form-group" style="width: 30%">
+                                    <div class="form-group" style="width: 75%">
                                         <label>Fecha y hora <span style="color: red">*</span></label>
                                         <input type="datetime-local" class="form-control" id="fechahora-nuevo" value="{{ $fechaHora }}">
                                     </div>
