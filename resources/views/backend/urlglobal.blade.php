@@ -1,4 +1,4 @@
-<!-- URL GLOBAL PETICIONES POST -->
+<!-- URL GLOBAL PETICIONES POST          /bitacorasuti.com           -->
 <script type="text/javascript"> var urlAdmin = "/bitacorasuti.com"; </script>
 
 

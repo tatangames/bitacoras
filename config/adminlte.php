@@ -321,6 +321,13 @@ return [
                     'icon' => 'far fa-circle',
                     'route' => 'admin.permisos.index',
                 ],
+
+                [
+                    'text' => 'Reportes Todos',
+                    'icon' => 'far fa-circle',
+                    'route' => 'admin.reportes.todos.index',
+                ],
+
             ],
         ],
 

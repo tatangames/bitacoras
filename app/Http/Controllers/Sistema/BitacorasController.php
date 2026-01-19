@@ -610,4 +610,342 @@ class BitacorasController extends Controller
     }
 
 
+
+    //***************************************************************
+    public function vistaReportesTodos()
+    {
+        $temaPredeterminado =  $this->getTemaPredeterminado();
+
+        return view('backend.admin.reportes.vistareportetodos', compact('temaPredeterminado'));
+    }
+
+
+    public function generarPdf(Request $request)
+    {
+
+        //1- bitacoras acceso
+        //2- bitacoras mantenimiento
+        //3- bitacoras soporte
+        //4- bitacoras incidencias
+
+        $tipo  = $request->tipo;
+        $desde = $request->desde;
+        $hasta = $request->hasta;
+        $desdeFormateado = $desde ? date('d/m/Y', strtotime($desde)) : '';
+        $hastaFormateado = $hasta ? date('d/m/Y', strtotime($hasta)) : '';
+
+
+
+
+        switch ($tipo) {
+
+            // =============================
+            // 1 - BITÁCORAS DE ACCESO
+            // =============================
+            case 1:
+                $registros = DB::table('bitacoras_acceso as b')
+                    ->join('administrador as a', 'a.id', '=', 'b.id_usuario')
+                    ->join('tipo_acceso as t', 't.id', '=', 'b.id_acceso')
+                    ->whereBetween('b.fecha', [$desde, $hasta])
+                    ->select(
+                        'b.fecha',
+                        'a.nombre as usuario',
+                        't.nombre as tipo_acceso',
+                        'b.novedad',
+                        'b.equipo_involucrado',
+                        'b.observaciones'
+                    )
+                    ->orderBy('b.fecha')
+                    ->get();
+                break;
+
+            // =============================
+            // 2 - MANTENIMIENTO
+            // =============================
+            case 2:
+                $registros = DB::table('bitacoras_mantenimiento as b')
+                    ->join('administrador as a', 'a.id', '=', 'b.id_usuario')
+                    ->whereBetween('b.fecha', [$desde, $hasta])
+                    ->select(
+                        'b.fecha',
+                        'a.nombre as usuario',
+                        'b.equipo',
+                        'b.tipo_mantenimiento',
+                        'b.descripcion',
+                        'b.proximo_mantenimiento',
+                        'b.observaciones'
+                    )
+                    ->orderBy('b.fecha')
+                    ->get();
+                break;
+
+            // =============================
+            // 3 - SOPORTE
+            // =============================
+            case 3:
+                $registros = DB::table('bitacoras_soporte as b')
+                    ->join('administrador as a', 'a.id', '=', 'b.id_usuario')
+                    ->join('unidad as u', 'u.id', '=', 'b.id_unidad')
+                    ->whereBetween('b.fecha', [$desde, $hasta])
+                    ->select(
+                        'b.fecha',
+                        'a.nombre as usuario',
+                        'u.nombre as unidad',
+                        'b.descripcion',
+                        'b.solucion',
+                        'b.estado',
+                        'b.observaciones'
+                    )
+                    ->orderBy('b.fecha')
+                    ->get();
+                break;
+
+            // =============================
+            // 4 - INCIDENCIAS
+            // =============================
+            case 4:
+                $registros = DB::table('bitacoras_incidencias as b')
+                    ->join('administrador as a', 'a.id', '=', 'b.id_usuario')
+                    ->whereBetween('b.fecha', [$desde, $hasta])
+                    ->select(
+                        'b.fecha',
+                        'a.nombre as usuario',
+                        'b.tipo_incidente',
+                        'b.sistema_afectado',
+                        'b.nivel',
+                        'b.medida_correctivas',
+                        'b.observaciones'
+                    )
+                    ->orderBy('b.fecha')
+                    ->get();
+                break;
+
+            default:
+                $registros = collect();
+        }
+
+        $nombreReporte = match ((int)$tipo) {
+            1 => 'BITÁCORA DE ACCESOS',
+            2 => 'BITÁCORA DE MANTENIMIENTO',
+            3 => 'BITÁCORA DE SOPORTE',
+            4 => 'BITÁCORA DE INCIDENCIAS',
+            default => 'REPORTE'
+        };
+
+        $fechaGenerado = date('d/m/Y');
+
+
+
+
+        // =========================
+        $mpdf = new \Mpdf\Mpdf([
+            'tempDir' => sys_get_temp_dir(),
+            'format' => 'LETTER',
+            'orientation' => 'L'
+        ]);
+
+
+
+        // =========================
+        // HTML PDF
+        // =========================
+
+        $mpdf->SetTitle('Reporte');
+
+        // mostrar errores
+        $mpdf->showImageErrors = false;
+
+        $logoalcaldia = 'images/gobiernologo.jpg';
+
+        $tabla = "
+           <table width='100%' style='border-collapse:collapse; font-family: Arial, sans-serif;'>
+            <tr>
+                <td style='width:25%; border:0.8px solid #000; padding:6px 8px;'>
+                    <table width='100%'>
+                        <tr>
+                            <td style='width:30%; text-align:left;'>
+                                <img src='{$logoalcaldia}' style='height:38px'>
+                            </td>
+                            <td style='width:70%; text-align:left; color:#104e8c; font-size:13px; font-weight:bold; line-height:1.3;'>
+                                SANTA ANA NORTE<br>EL SALVADOR
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style='width:50%; border-top:0.8px solid #000; border-bottom:0.8px solid #000; padding:6px 8px; text-align:center; font-size:15px; font-weight:bold;'>
+                    REPORTE DE BITACORAS<br>
+                </td>
+                <td style='width:25%; border:0.8px solid #000; padding:0; vertical-align:top;'>
+                    <table width='100%' style='font-size:10px;'>
+                        <tr>
+                            <td width='40%' style='border-right:0.8px solid #000; border-bottom:0.8px solid #000; padding:4px 6px;'><strong>Código:</strong></td>
+                            <td width='60%' style='border-bottom:0.8px solid #000; padding:4px 6px; text-align:center;'></td>
+                        </tr>
+                        <tr>
+                            <td style='border-right:0.8px solid #000; border-bottom:0.8px solid #000; padding:4px 6px;'><strong>Versión:</strong></td>
+                            <td style='border-bottom:0.8px solid #000; padding:4px 6px; text-align:center;'>000</td>
+                        </tr>
+                        <tr>
+                            <td style='border-right:0.8px solid #000; padding:4px 6px;'><strong>Fecha de vigencia:</strong></td>
+                            <td style='padding:4px 6px; text-align:center;'></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <br>";
+
+        $tabla .= "
+<table width='100%' style='border-collapse:collapse; font-size:11px; margin-bottom:8px;' border='1' cellpadding='6'>
+    <tr style='background:#f8f8f8; font-weight:bold;'>
+        <td width='33%'>REPORTE: {$nombreReporte}</td>
+        <td width='34%'>FECHA GENERADO: {$fechaGenerado}</td>
+        <td width='33%'>PERÍODO: {$desdeFormateado} AL {$hastaFormateado}</td>
+    </tr>
+</table> <br>
+";
+
+
+
+        $tabla .= "<table width='100%' style='border-collapse:collapse; font-size:10px;' border='1' cellpadding='4'>";
+
+        if($tipo == 1){
+
+            $tabla .= "
+    <tr style='background:#f0f0f0; font-weight:bold;'>
+        <td>Fecha</td>
+        <td>Usuario</td>
+        <td>Tipo Acceso</td>
+        <td>Novedad</td>
+        <td>Equipo</td>
+        <td>Observaciones</td>
+    </tr>";
+
+            foreach($registros as $r){
+                $tabla .= "
+        <tr>
+            <td>".$this->fechaDMYHora($r->fecha)."</td>
+            <td>{$r->usuario}</td>
+            <td>{$r->tipo_acceso}</td>
+            <td>{$r->novedad}</td>
+            <td>{$r->equipo_involucrado}</td>
+            <td>{$r->observaciones}</td>
+        </tr>";
+            }
+        }
+
+
+        if($tipo == 2){
+
+            $tabla .= "
+    <tr style='background:#f0f0f0; font-weight:bold;'>
+        <td>Fecha</td>
+        <td>Usuario</td>
+        <td>Equipo</td>
+        <td>Tipo</td>
+        <td>Descripción</td>
+        <td>Próximo</td>
+        <td>Observaciones</td>
+    </tr>";
+
+            foreach($registros as $r){
+                $tabla .= "
+        <tr>
+           <td>".$this->fechaDMYHora($r->fecha)."</td>
+            <td>{$r->usuario}</td>
+            <td>{$r->equipo}</td>
+            <td>{$r->tipo_mantenimiento}</td>
+            <td>{$r->descripcion}</td>
+            <td>{$r->proximo_mantenimiento}</td>
+            <td>{$r->observaciones}</td>
+        </tr>";
+            }
+        }
+
+
+        if($tipo == 3){
+
+            $tabla .= "
+    <tr style='background:#f0f0f0; font-weight:bold;'>
+        <td>Fecha</td>
+        <td>Usuario</td>
+        <td>Unidad</td>
+        <td>Descripción</td>
+        <td>Solución</td>
+        <td>Estado</td>
+        <td>Observaciones</td>
+    </tr>";
+
+            foreach($registros as $r){
+                $tabla .= "
+        <tr>
+          <td>".$this->fechaDMYHora($r->fecha)."</td>
+            <td>{$r->usuario}</td>
+            <td>{$r->unidad}</td>
+            <td>{$r->descripcion}</td>
+            <td>{$r->solucion}</td>
+            <td>{$r->estado}</td>
+            <td>{$r->observaciones}</td>
+        </tr>";
+            }
+        }
+
+
+
+        if($tipo == 4){
+
+            $tabla .= "
+    <tr style='background:#f0f0f0; font-weight:bold;'>
+        <td>Fecha</td>
+        <td>Usuario</td>
+        <td>Tipo</td>
+        <td>Sistema</td>
+        <td>Nivel</td>
+        <td>Medidas</td>
+        <td>Observaciones</td>
+    </tr>";
+
+            foreach($registros as $r){
+                $tabla .= "
+        <tr>
+            <td>".$this->fechaDMYHora($r->fecha)."</td>
+            <td>{$r->usuario}</td>
+            <td>{$r->tipo_incidente}</td>
+            <td>{$r->sistema_afectado}</td>
+            <td>{$r->nivel}</td>
+            <td>{$r->medida_correctivas}</td>
+            <td>{$r->observaciones}</td>
+        </tr>";
+            }
+        }
+
+
+
+        $mpdf->SetFooter('Página {PAGENO} de {nbpg}');
+        $tabla .= "</table>";
+        $mpdf->WriteHTML($tabla);
+        $mpdf->Output();
+    }
+
+
+    private function fechaDMY($fecha){
+        if(!$fecha) return '';
+        return date('d-m-Y', strtotime($fecha));
+    }
+
+    private function fechaDMYHora($fecha){
+        if(!$fecha) return '';
+        return date('d-m-Y H:i', strtotime($fecha));
+    }
+
+
+
+
+
+
+
+
+
+
+
 }

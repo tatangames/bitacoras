@@ -99,4 +99,9 @@ Route::post('/admin/bitacora/soporte/informacion', [BitacorasController::class,'
 Route::post('/admin/bitacora/soporte/actualizar', [BitacorasController::class,'actualizarSoporte']);
 
 
+// ADMIN GENERAR REPORTES TODOS
+Route::get('/admin/todos/vista/reportes', [BitacorasController::class,'vistaReportesTodos'])->name('admin.reportes.todos.index');
+Route::post('admin/generar/reporte/pdf',
+    [BitacorasController::class, 'generarPdf']
+)->name('admin.generar.reporte.pdf');
 
