@@ -824,7 +824,7 @@ class BitacorasController extends Controller
             foreach($registros as $r){
                 $tabla .= "
         <tr>
-            <td>".$this->fechaDMYHora($r->fecha)."</td>
+            <td>".$this->fechaDMY($r->fecha)."</td>
             <td>{$r->usuario}</td>
             <td>{$r->tipo_acceso}</td>
             <td>{$r->novedad}</td>
@@ -851,10 +851,10 @@ class BitacorasController extends Controller
             foreach($registros as $r){
                 $tabla .= "
         <tr>
-           <td>".$this->fechaDMYHora($r->fecha)."</td>
+           <td>".$this->fechaDMY($r->fecha)."</td>
             <td>{$r->usuario}</td>
             <td>{$r->equipo}</td>
-            <td>{$r->tipo_mantenimiento}</td>
+            <td>".$this->estadoMantenimientoTexto($r->tipo_mantenimiento)."</td>
             <td>{$r->descripcion}</td>
             <td>{$r->proximo_mantenimiento}</td>
             <td>{$r->observaciones}</td>
@@ -879,12 +879,12 @@ class BitacorasController extends Controller
             foreach($registros as $r){
                 $tabla .= "
         <tr>
-          <td>".$this->fechaDMYHora($r->fecha)."</td>
+          <td>".$this->fechaDMY($r->fecha)."</td>
             <td>{$r->usuario}</td>
             <td>{$r->unidad}</td>
             <td>{$r->descripcion}</td>
             <td>{$r->solucion}</td>
-            <td>{$r->estado}</td>
+           <td>".$this->estadoSoporteTexto($r->estado)."</td>
             <td>{$r->observaciones}</td>
         </tr>";
             }
@@ -908,7 +908,7 @@ class BitacorasController extends Controller
             foreach($registros as $r){
                 $tabla .= "
         <tr>
-            <td>".$this->fechaDMYHora($r->fecha)."</td>
+            <td>".$this->fechaDMY($r->fecha)."</td>
             <td>{$r->usuario}</td>
             <td>{$r->tipo_incidente}</td>
             <td>{$r->sistema_afectado}</td>
@@ -933,15 +933,24 @@ class BitacorasController extends Controller
         return date('d-m-Y', strtotime($fecha));
     }
 
-    private function fechaDMYHora($fecha){
-        if(!$fecha) return '';
-        return date('d-m-Y H:i', strtotime($fecha));
+    private function estadoSoporteTexto($estado)
+    {
+        return match ((int)$estado) {
+            1 => 'Pendiente',
+            2 => 'Solucionado',
+            default => '—'
+        };
     }
 
-
-
-
-
+    private function estadoMantenimientoTexto($estado)
+    {
+        return match ((int)$estado) {
+            1 => 'Actualización',
+            2 => 'Preventivo',
+            3 => 'Correctivo',
+            default => '—'
+        };
+    }
 
 
 

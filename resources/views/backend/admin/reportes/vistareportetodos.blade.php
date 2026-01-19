@@ -76,12 +76,12 @@
                                         </select>
                                     </div>
 
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-4">
                                         <label>Desde</label>
                                         <input type="date" class="form-control" id="fecha-desdelote">
                                     </div>
 
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-4">
                                         <label>Hasta</label>
                                         <input type="date" class="form-control" id="fecha-hastalote">
                                     </div>
