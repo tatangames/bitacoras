@@ -724,13 +724,34 @@ class BitacorasController extends Controller
                 $registros = collect();
         }
 
-        $nombreReporte = match ((int)$tipo) {
-            1 => 'BITÁCORA DE ACCESOS',
-            2 => 'BITÁCORA DE MANTENIMIENTO',
-            3 => 'BITÁCORA DE SOPORTE',
-            4 => 'BITÁCORA DE INCIDENCIAS',
-            default => 'REPORTE'
+        $nombreEncabezado = match ((int)$tipo) {
+            1 => 'Bitácora de Acceso y Novedades',
+            2 => 'Bitácora de Mantenimiento de Servidores y Sistemas',
+            3 => 'Bitácora de Soporte Técnico',
+            4 => 'Registro de Incidencias de Ciber Seguridad',
+            default => ''
         };
+
+        $nombreCodigo = match ((int)$tipo) {
+            1 => 'TECN-001-BITA',
+            2 => 'TECN-003-BITA',
+            3 => 'TECN-002-BITA',
+            4 => 'TECT-004-BITA',
+            default => ''
+        };
+
+
+        $nombreTitulo = match ((int)$tipo) {
+            1 => 'UNIDAD DE TECNOLOGÍAS DE LA INFORMACIÓN <br> BITÁCORA DE ACCESO Y NOVEDADES',
+            2 => 'UNIDAD DE TECNOLOGÍAS DE LA INFORMACIÓN <br> BITÁCORA DE MANTENIMIENTO DE SERVIDORES Y SISTEMAS',
+            3 => 'UNIDAD DE TECNOLOGÍAS DE LA INFORMACIÓN <br> BITÁCORA DE SOPORTE TÉCNICO',
+            4 => 'UNIDAD DE TECNOLOGÍAS DE LA INFORMACIÓN <br> BITÁCORA DE INCIDENCIAS DE CIBER SEGURIDAD',
+            default => ''
+        };
+
+
+
+
 
         $fechaGenerado = date('d/m/Y');
 
@@ -773,13 +794,13 @@ class BitacorasController extends Controller
                     </table>
                 </td>
                 <td style='width:50%; border-top:0.8px solid #000; border-bottom:0.8px solid #000; padding:6px 8px; text-align:center; font-size:15px; font-weight:bold;'>
-                    REPORTE DE BITACORAS<br>
+                    $nombreEncabezado<br>
                 </td>
                 <td style='width:25%; border:0.8px solid #000; padding:0; vertical-align:top;'>
                     <table width='100%' style='font-size:10px;'>
                         <tr>
                             <td width='40%' style='border-right:0.8px solid #000; border-bottom:0.8px solid #000; padding:4px 6px;'><strong>Código:</strong></td>
-                            <td width='60%' style='border-bottom:0.8px solid #000; padding:4px 6px; text-align:center;'></td>
+                            <td width='60%' style='border-bottom:0.8px solid #000; padding:4px 6px; text-align:center;'>$nombreCodigo</td>
                         </tr>
                         <tr>
                             <td style='border-right:0.8px solid #000; border-bottom:0.8px solid #000; padding:4px 6px;'><strong>Versión:</strong></td>
@@ -787,7 +808,7 @@ class BitacorasController extends Controller
                         </tr>
                         <tr>
                             <td style='border-right:0.8px solid #000; padding:4px 6px;'><strong>Fecha de vigencia:</strong></td>
-                            <td style='padding:4px 6px; text-align:center;'></td>
+                            <td style='padding:4px 6px; text-align:center;'>22/10/2025</td>
                         </tr>
                     </table>
                 </td>
@@ -795,67 +816,62 @@ class BitacorasController extends Controller
         </table>
         <br>";
 
-        $tabla .= "
-<table width='100%' style='border-collapse:collapse; font-size:11px; margin-bottom:8px;' border='1' cellpadding='6'>
-    <tr style='background:#f8f8f8; font-weight:bold;'>
-        <td width='33%'>REPORTE: {$nombreReporte}</td>
-        <td width='34%'>FECHA GENERADO: {$fechaGenerado}</td>
-        <td width='33%'>PERÍODO: {$desdeFormateado} AL {$hastaFormateado}</td>
-    </tr>
-</table> <br>
-";
-
+        $tabla .= '<p style="text-align:center; font-weight:bold;">' . $nombreTitulo . '</p>';
 
 
         $tabla .= "<table width='100%' style='border-collapse:collapse; font-size:10px;' border='1' cellpadding='4'>";
 
-        if($tipo == 1){
+        if($tipo == 1){ // ACCESO
 
             $tabla .= "
     <tr style='background:#f0f0f0; font-weight:bold;'>
-        <td>Fecha</td>
-        <td>Usuario</td>
-        <td>Tipo Acceso</td>
-        <td>Novedad</td>
-        <td>Equipo</td>
-        <td>Observaciones</td>
+        <td>FECHA</td>
+        <td>HORA</td>
+        <td>OPERADOR</td>
+        <td>TIPO DE ACCESO</td>
+        <td>NOVEDAD</td>
+        <td>EQUIPO INVOLUCRADO</td>
+        <td>OBSERVACIONES</td>
+        <td style='width: 10%'>FIRMA</td>
     </tr>";
+
+            foreach($registros as $r){
+                $tabla .= "
+        <tr>
+    <td style='padding:3px;'>".$this->fechaDMY($r->fecha)."</td>
+    <td style='padding:3px;'>".$this->fechaHora($r->fecha)."</td>
+    <td style='padding:3px;'>{$r->usuario}</td>
+    <td style='padding:3px;'>{$r->tipo_acceso}</td>
+    <td style='padding:3px;'>{$r->novedad}</td>
+    <td style='padding:3px;'>{$r->equipo_involucrado}</td>
+    <td style='padding:3px;'>{$r->observaciones}</td>
+    <td style='height:30px;'></td>
+</tr>";
+            }
+        }
+
+
+        if($tipo == 2){ // MANTENIMIENTO
+
+            $tabla .= "
+            <tr style='background:#f0f0f0; font-weight:bold;'>
+                <td>FECHA</td>
+                <td>EQUIPO</td>
+                <td>TIPO MTTO</td>
+                <td>DESCRIPCIÓN</td>
+                <td>TÉCNICO</td>
+                <td>PRÓXIMO MTTO</td>
+                <td>OBSERVACIONES</td>
+            </tr>";
 
             foreach($registros as $r){
                 $tabla .= "
         <tr>
             <td>".$this->fechaDMY($r->fecha)."</td>
-            <td>{$r->usuario}</td>
-            <td>{$r->tipo_acceso}</td>
-            <td>{$r->novedad}</td>
-            <td>{$r->equipo_involucrado}</td>
-            <td>{$r->observaciones}</td>
-        </tr>";
-            }
-        }
-
-
-        if($tipo == 2){
-
-            $tabla .= "
-    <tr style='background:#f0f0f0; font-weight:bold;'>
-        <td>Fecha</td>
-        <td>Usuario</td>
-        <td>Equipo</td>
-        <td>Tipo</td>
-        <td>Descripción</td>
-        <td>Próximo</td>
-        <td>Observaciones</td>
-    </tr>";
-
-            foreach($registros as $r){
-                $tabla .= "
-        <tr>
-           <td>".$this->fechaDMY($r->fecha)."</td>
-            <td>{$r->usuario}</td>
             <td>{$r->equipo}</td>
             <td>".$this->estadoMantenimientoTexto($r->tipo_mantenimiento)."</td>
             <td>{$r->descripcion}</td>
+            <td>{$r->usuario}</td>
             <td>{$r->proximo_mantenimiento}</td>
             <td>{$r->observaciones}</td>
         </tr>";
@@ -863,63 +879,67 @@ class BitacorasController extends Controller
         }
 
 
-        if($tipo == 3){
+        if($tipo == 3){ // SOPORTE
 
             $tabla .= "
-    <tr style='background:#f0f0f0; font-weight:bold;'>
-        <td>Fecha</td>
-        <td>Usuario</td>
-        <td>Unidad</td>
-        <td>Descripción</td>
-        <td>Solución</td>
-        <td>Estado</td>
-        <td>Observaciones</td>
-    </tr>";
+<tr style='background:#f0f0f0; font-weight:bold;'>
+    <td>No.</td>
+    <td>FECHA</td>
+    <td>UNIDAD</td>
+    <td>DESCRIPCIÓN</td>
+    <td>TÉCNICO</td>
+    <td>SOLUCIÓN</td>
+    <td>ESTADO</td>
+    <td>OBSERVACIONES</td>
+</tr>";
+
+            $i = 1; // contador correlativo
 
             foreach($registros as $r){
                 $tabla .= "
-        <tr>
-          <td>".$this->fechaDMY($r->fecha)."</td>
-            <td>{$r->usuario}</td>
-            <td>{$r->unidad}</td>
-            <td>{$r->descripcion}</td>
-            <td>{$r->solucion}</td>
-           <td>".$this->estadoSoporteTexto($r->estado)."</td>
-            <td>{$r->observaciones}</td>
-        </tr>";
+                <tr>
+                    <td style='text-align:center;'>".$i."</td>
+                    <td>".$this->fechaDMY($r->fecha)."</td>
+                    <td>{$r->unidad}</td>
+                    <td>{$r->descripcion}</td>
+                    <td>{$r->usuario}</td>
+                    <td>{$r->solucion}</td>
+                    <td>".$this->estadoSoporteTexto($r->estado)."</td>
+                    <td>{$r->observaciones}</td>
+                </tr>";
+                $i++;
             }
         }
 
 
 
-        if($tipo == 4){
+
+        if($tipo == 4){ // INCIDENCIAS
 
             $tabla .= "
     <tr style='background:#f0f0f0; font-weight:bold;'>
-        <td>Fecha</td>
-        <td>Usuario</td>
-        <td>Tipo</td>
-        <td>Sistema</td>
-        <td>Nivel</td>
-        <td>Medidas</td>
-        <td>Observaciones</td>
+        <td>FECHA</td>
+        <td>TIPO DE INCIDENTE</td>
+        <td>SISTEMA AFECTADO</td>
+        <td>NIVEL</td>
+        <td>RESPONSABLE</td>
+        <td>MEDIDAS CORRECTIVAS</td>
+        <td>OBSERVACIONES</td>
     </tr>";
 
             foreach($registros as $r){
                 $tabla .= "
         <tr>
             <td>".$this->fechaDMY($r->fecha)."</td>
-            <td>{$r->usuario}</td>
             <td>{$r->tipo_incidente}</td>
             <td>{$r->sistema_afectado}</td>
-            <td>{$r->nivel}</td>
+            <td>".$this->estadoIncidenciasTexto($r->nivel)."</td>
+            <td>{$r->usuario}</td>
             <td>{$r->medida_correctivas}</td>
             <td>{$r->observaciones}</td>
         </tr>";
             }
         }
-
-
 
         $mpdf->SetFooter('Página {PAGENO} de {nbpg}');
         $tabla .= "</table>";
@@ -931,6 +951,11 @@ class BitacorasController extends Controller
     private function fechaDMY($fecha){
         if(!$fecha) return '';
         return date('d-m-Y', strtotime($fecha));
+    }
+
+    private function fechaHora($fecha){
+        if(!$fecha) return '';
+        return date('h:i A', strtotime($fecha));
     }
 
     private function estadoSoporteTexto($estado)
@@ -951,6 +976,18 @@ class BitacorasController extends Controller
             default => '—'
         };
     }
+
+
+    private function estadoIncidenciasTexto($estado)
+    {
+        return match ((int)$estado) {
+            1 => 'Ordinarios',
+            2 => 'Relevantes',
+            3 => 'Críticos',
+            default => '—'
+        };
+    }
+
 
 
 
