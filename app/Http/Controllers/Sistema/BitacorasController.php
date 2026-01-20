@@ -872,7 +872,7 @@ class BitacorasController extends Controller
             <td>".$this->estadoMantenimientoTexto($r->tipo_mantenimiento)."</td>
             <td>{$r->descripcion}</td>
             <td>{$r->usuario}</td>
-            <td>{$r->proximo_mantenimiento}</td>
+             <td>".$this->fechaDMY($r->proximo_mantenimiento)."</td>
             <td>{$r->observaciones}</td>
         </tr>";
             }
