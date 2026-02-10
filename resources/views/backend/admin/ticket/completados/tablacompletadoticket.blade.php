@@ -2,6 +2,7 @@
     <thead>
     <tr>
         <th  style="width: 12%">Fecha</th>
+        <th  style="width: 12%">Unidad</th>
         <th  style="width: 12%">Tipo Incidente</th>
         <th  style="width: 12%">Sistema Afectado</th>
         <th  style="width: 12%">Nivel</th>
@@ -16,6 +17,9 @@
             {{-- Usa timestamp para ordenar sin ambigüedad --}}
             <td data-order="{{ strtotime($dato->fecha) }}">
                 {{ $dato->fechaFormat }}
+            </td>
+            <td>
+                {{ $dato->nombreUnidad }}
             </td>
             <td>
                 {{ $dato->tipo_incidente }}

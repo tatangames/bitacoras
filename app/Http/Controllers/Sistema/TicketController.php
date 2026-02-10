@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Sistema;
 use App\Http\Controllers\Controller;
 use App\Models\Administrador;
 use App\Models\BitacorasIncidencias;
+use App\Models\Unidad;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -148,6 +149,14 @@ class TicketController extends Controller
             ->orderBy('fecha', 'ASC')
             ->get()
             ->map(function ($item) {
+
+                $infoAdmin = Administrador::where('id', $item->id_usuario)->first();
+
+                $nombreUnidad = "";
+                if($infoUnidad = Unidad::where('id', $infoAdmin->id_unidad)->first()){
+                    $nombreUnidad = $infoUnidad->nombre;
+                }
+                $item->nombreUnidad = $nombreUnidad;
 
                 // Crear campo formateado
                 $item->fechaFormat = Carbon::parse($item->fecha)->format('d/m/Y');
