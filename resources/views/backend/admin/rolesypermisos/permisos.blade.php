@@ -82,7 +82,7 @@
         </section>
 
         <div class="modal fade" id="modalAgregar">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Nuevo Usuario</h4>
@@ -111,6 +111,18 @@
                                             <input type="text" maxlength="16" autocomplete="off" class="form-control" id="password-nuevo" placeholder="Contraseña">
                                         </div>
 
+
+                                        <div class="form-group">
+                                            <label>Unidad (Opcional):</label>
+                                            <br>
+                                            <select width="100%" class="form-control" id="select-unidad">
+                                                @foreach($arrayUnidad as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->nombre }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+
                                         <div class="form-group">
                                             <label style="color:#191818">Rol</label>
                                             <br>
@@ -137,7 +149,7 @@
         </div>
 
         <div class="modal fade" id="modalEditar">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Editar Usuario</h4>
@@ -175,6 +187,17 @@
                                             <label>Contraseña</label>
                                             <input type="text" maxlength="16" autocomplete="off" class="form-control" id="password-editar" placeholder="Contraseña">
                                         </div>
+
+
+                                        <div class="form-group">
+                                            <label>Unidad (Opcional):</label>
+                                            <br>
+                                            <select width="100%" class="form-control" id="select-unidad-editar">
+
+                                            </select>
+                                        </div>
+
+
 
                                     </div>
                                 </div>
@@ -272,6 +295,7 @@
             var usuario = document.getElementById('usuario-nuevo').value;
             var password = document.getElementById('password-nuevo').value;
             var idrol = document.getElementById('rol-nuevo').value;
+            var idunidad = document.getElementById('select-unidad').value;
 
             if(nombre === ''){
                 toastr.error('Nombre es requerido');
@@ -319,6 +343,7 @@
             formData.append('usuario', usuario);
             formData.append('password', password);
             formData.append('rol', idrol);
+            formData.append('idunidad', idunidad);
 
             axios.post(urlAdmin+'/admin/permisos/nuevo-usuario', formData, {
             })
@@ -353,6 +378,8 @@
                 .then((response) => {
                     closeLoading();
 
+                    console.log(response)
+
                     if(response.data.success === 1){
                         $('#modalEditar').modal('show');
                         $('#id-editar').val(response.data.info.id);
@@ -360,6 +387,7 @@
                         $('#usuario-editar').val(response.data.info.usuario);
 
                         document.getElementById("rol-editar").options.length = 0;
+                        document.getElementById("select-unidad-editar").options.length = 0;
 
                         $.each(response.data.roles, function( key, val ){
 
@@ -369,6 +397,16 @@
                                 $('#rol-editar').append('<option value="' +key +'">'+val+'</option>');
                             }
                         });
+
+                        $('#select-unidad-editar').append('<option value="" selected="selected">Ninguna Unidad</option>');
+                        $.each(response.data.arrayUnidad, function( key, val ){
+                            if(response.data.info.id_unidad === val.id){
+                                $('#select-unidad-editar').append('<option value="' +val.id +'" selected="selected">'+val.nombre+'</option>');
+                            }else{
+                                $('#select-unidad-editar').append('<option value="' +val.id +'">'+val.nombre+'</option>');
+                            }
+                        });
+
 
                     }else{
                         toastr.error('Información no encontrado.');
@@ -387,7 +425,7 @@
             var usuario = document.getElementById('usuario-editar').value;
             var password = document.getElementById('password-editar').value;
             var idrol = document.getElementById('rol-editar').value;
-
+            var idunidad = document.getElementById('select-unidad-editar').value;
 
             if(nombre === ''){
                 toastr.error('Nombre es requerido');
@@ -428,6 +466,8 @@
             formData.append('usuario', usuario);
             formData.append('password', password);
             formData.append('rol', idrol);
+            formData.append('idunidad', idunidad);
+
 
             axios.post(urlAdmin+'/admin/permisos/editar-usuario', formData, {
             })

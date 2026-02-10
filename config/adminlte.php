@@ -387,9 +387,6 @@ return [
 
             ],
         ],
-
-
-
         [
             'text'    => 'Configuración',
             'icon'    => 'fas fa-pen-alt',
@@ -406,6 +403,20 @@ return [
 
             ],
         ],
+
+
+
+        [
+            'text'  => 'Generar Ticket',
+            'icon'  => 'fas fa-file-alt',
+            'route' => 'admin.ticket.generar.index',
+            'can'   => 'ticket.sidebar',
+        ],
+
+
+
+
+
 
 
 

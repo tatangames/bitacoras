@@ -356,6 +356,7 @@ class BitacorasController extends Controller
             $dato->nivel = $request->nivel; // criticos, relevantes, ordinarios
             $dato->medida_correctivas = $request->medida;
             $dato->observaciones = $request->observacion;
+            $dato->estado = 1; // REGISTRADO MANUAL
             $dato->save();
 
             DB::commit();

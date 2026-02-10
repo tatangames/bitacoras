@@ -8,6 +8,7 @@ use App\Http\Controllers\Sistema\PerfilController;
 use App\Http\Controllers\Sistema\PermisoController;
 use App\Http\Controllers\Sistema\ConfiguracionController;
 use App\Http\Controllers\Sistema\BitacorasController;
+use App\Http\Controllers\Sistema\TicketController;
 
 
 Route::get('/', [LoginController::class,'vistaLoginForm'])->name('login.admin');
@@ -104,4 +105,17 @@ Route::get('/admin/todos/vista/reportes', [BitacorasController::class,'vistaRepo
 Route::post('admin/generar/reporte/pdf',
     [BitacorasController::class, 'generarPdf']
 )->name('admin.generar.reporte.pdf');
+
+
+
+// TICKET
+Route::get('/admin/ticket/generar/index', [TicketController::class,'indexGenerarTicket'])->name('admin.ticket.generar.index');
+Route::post('/admin/ticket/registro', [TicketController::class,'generarTicket']);
+
+
+
+
+
+
+
 

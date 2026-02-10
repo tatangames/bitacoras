@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Sistema;
 
 use App\Http\Controllers\Controller;
 use App\Models\Administrador;
+use App\Models\Unidad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -26,11 +27,21 @@ class PermisoController extends Controller
         $roles = Role::all()->pluck('name', 'id');
         $temaPredeterminado =  $this->getTemaPredeterminado();
 
-        return view('backend.admin.rolesypermisos.permisos', compact('roles', 'temaPredeterminado'));
+        $arrayUnidad = Unidad::orderBy('nombre', 'ASC')->get();
+
+        return view('backend.admin.rolesypermisos.permisos', compact('roles', 'temaPredeterminado', 'arrayUnidad'));
     }
 
     public function tablaUsuarios(){
-        $usuarios = Administrador::orderBy('id', 'ASC')->get();
+        $usuarios = Administrador::with('unidad')
+            ->orderBy('id', 'ASC')
+            ->get()
+            ->map(function ($item) {
+                $item->nombreUnidad = $item->unidad->nombre ?? '';
+                return $item;
+            });
+
+
 
         return view('backend.admin.rolesypermisos.tabla.tablapermisos', compact('usuarios'));
     }
@@ -58,6 +69,7 @@ class PermisoController extends Controller
         $u->password = bcrypt($request->password);
         $u->activo   = 1;
         $u->tema     = 0;
+        $u->id_unidad = $request->idunidad;
 
         if ($u->save()) {
 
@@ -77,10 +89,14 @@ class PermisoController extends Controller
 
             $idrol = $info->roles->pluck('id');
 
+            $arrayUnidad = Unidad::orderBy('nombre', 'ASC')->get();
+
             return ['success' => 1,
                 'info' => $info,
                 'roles' => $roles,
-                'idrol' => $idrol];
+                'idrol' => $idrol,
+                'arrayUnidad' => $arrayUnidad
+                ];
 
         }else{
             return ['success' => 2];
@@ -99,6 +115,7 @@ class PermisoController extends Controller
             $usuario = Administrador::find($request->id);
             $usuario->nombre = $request->nombre;
             $usuario->usuario = $request->usuario;
+            $usuario->id_unidad = $request->idunidad;
 
             if($request->password != null){
                 $usuario->password = bcrypt($request->password);

@@ -23,6 +23,11 @@ return new class extends Migration
             $table->integer('nivel'); // ordinarios, relevantes, criticos
             $table->text('medida_correctivas')->nullable();
             $table->text('observaciones')->nullable();
+
+            // 0: pendiente
+            // 1: compeltado
+            $table->boolean('estado');
+
         });
     }
 

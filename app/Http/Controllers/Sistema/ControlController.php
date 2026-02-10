@@ -24,6 +24,10 @@ class ControlController extends Controller
             return redirect()->route('admin.registro.novedades.acceso.index');
         }
 
+        if ($user->hasRole('ticket')) {
+            return redirect()->route('admin.ticket.generar.index');
+        }
+
         return redirect()->route('no.permisos.index');
     }
 

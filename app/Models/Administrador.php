@@ -17,6 +17,18 @@ class Administrador extends Authenticatable
     public $timestamps = false;
 
     protected $guard_name = 'admin';
+
+
+
+
+    public function unidad()
+    {
+        return $this->belongsTo(Unidad::class, 'id_unidad');
+    }
+
+
+
+
     /**
      * The attributes that are mass assignable.
      *

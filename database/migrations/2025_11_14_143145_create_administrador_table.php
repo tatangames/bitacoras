@@ -18,6 +18,11 @@ return new class extends Migration
             $table->string('password', 255);
             $table->boolean('activo');
             $table->boolean('tema');
+
+            $table->foreignId('id_unidad')
+                ->constrained('unidad')
+                ->cascadeOnDelete()
+                ->nullOnDelete();
         });
     }
 
