@@ -17,7 +17,8 @@ return new class extends Migration
 
             // hora y fecha del guardado
             $table->datetime('fecha_registro'); // esto cuando guarda el registro
-            $table->date('fecha');
+            $table->date('fecha'); // fecha que puso el usuario que se hzio la incidencia
+            $table->date('fecha_solucionado')->nullable(); // fecha que fue solucionado
             $table->text('tipo_incidente')->nullable();
             $table->text('sistema_afectado')->nullable();
             $table->integer('nivel'); // ordinarios, relevantes, criticos
@@ -25,7 +26,8 @@ return new class extends Migration
             $table->text('observaciones')->nullable();
 
             // 0: pendiente
-            // 1: compeltado
+            // 1: solucionado por usuario
+            // 2: revisado por administrador
             $table->boolean('estado');
 
         });

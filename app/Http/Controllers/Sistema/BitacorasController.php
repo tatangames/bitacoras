@@ -356,7 +356,7 @@ class BitacorasController extends Controller
             $dato->nivel = $request->nivel; // criticos, relevantes, ordinarios
             $dato->medida_correctivas = $request->medida;
             $dato->observaciones = $request->observacion;
-            $dato->estado = 1; // REGISTRADO MANUAL
+            $dato->estado = 3; // REGISTRADO MANUAL
             $dato->save();
 
             DB::commit();
@@ -708,6 +708,7 @@ class BitacorasController extends Controller
                 $registros = DB::table('bitacoras_incidencias as b')
                     ->join('administrador as a', 'a.id', '=', 'b.id_usuario')
                     ->whereBetween('b.fecha', [$desde, $hasta])
+                    ->where('b.estado', 2) // ya completado info por admin
                     ->select(
                         'b.fecha',
                         'a.nombre as usuario',

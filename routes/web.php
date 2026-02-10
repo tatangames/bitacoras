@@ -112,6 +112,15 @@ Route::post('admin/generar/reporte/pdf',
 Route::get('/admin/ticket/generar/index', [TicketController::class,'indexGenerarTicket'])->name('admin.ticket.generar.index');
 Route::post('/admin/ticket/registro', [TicketController::class,'generarTicket']);
 
+Route::get('/admin/ticket/incidencias/index', [TicketController::class,'indexTicketPendiente'])->name('admin.ticket.pendiente.index');
+Route::get('/admin/ticket-incidencias/tabla', [TicketController::class,'tablaTicketPendiente']);
+Route::post('/admin/ticket-incidencias/solucionado', [TicketController::class,'solucionarIncidencia']);
+
+Route::get('/admin/ticket/incidencias-porrevisar/index', [TicketController::class,'indexTicketPendientePorRevisar'])->name('admin.ticket.incidencias.porrevisar.index');
+Route::get('/admin/ticket-incidencias-porrevisar/tabla', [TicketController::class,'tablaTicketPendientePorRevisar']);
+Route::post('/admin/ticket-incidencias/actualizar/porrevisar', [TicketController::class,'revisadoTicketCompletado']);
+
+
 
 
 

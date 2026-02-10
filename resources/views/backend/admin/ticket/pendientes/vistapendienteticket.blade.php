@@ -1,12 +1,10 @@
 @extends('adminlte::page')
 
-@section('title', 'Roles')
+@section('title', 'Lista - Incidencias')
 
 @section('content_header')
-    <h1>Roles</h1>
+    <h1>Lista - Incidencias</h1>
 @stop
-
-
 {{-- Activa plugins que necesitas --}}
 @section('plugins.Datatables', true)
 @section('plugins.DatatablesPlugins', true)
@@ -15,7 +13,9 @@
 @include('backend.urlglobal')
 
 @section('content_top_nav_right')
-    <link href="{{ asset('css/toastr.min.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('css/toastr.min.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('css/select2.min.css') }}" type="text/css" rel="stylesheet">
+    <link href="{{ asset('css/select2-bootstrap-5-theme.min.css') }}" type="text/css" rel="stylesheet">
 
     <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#" title="Tema">
@@ -31,7 +31,6 @@
         </div>
     </li>
 
-
     <li class="nav-item dropdown">
         <a href="#" class="nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-cogs"></i>
@@ -42,8 +41,6 @@
             <a href="{{ route('admin.perfil') }}" class="dropdown-item">
                 <i class="fas fa-user mr-2"></i> Editar Perfil
             </a>
-
-            <div class="dropdown-divider"></div>
 
             <form action="{{ route('admin.logout') }}" method="POST">
                 @csrf
@@ -56,18 +53,20 @@
 @endsection
 
 @section('content')
-    <div id="divcontenedor">
-        <section class="content-header">
-            <div class="container-fluid">
-                <button type="button" onclick="modalAgregar()" class="btn btn-success btn-sm">
-                    <i class="fas fa-pencil-alt"></i>
-                    Nuevo Rol
-                </button>
 
-                <button type="button" onclick="vistaPermisos()" class="btn btn-success btn-sm">
-                    <i class="fas fa-list-alt"></i>
-                    Lista de Permisos
-                </button>
+    <div id="divcontenedor">
+
+        <section class="content-header">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Bitacoras</li>
+                        <li class="breadcrumb-item active">Listado de Incidencias</li>
+                    </ol>
+                </div>
             </div>
         </section>
 
@@ -75,12 +74,13 @@
             <div class="container-fluid">
                 <div class="card card-gray-dark">
                     <div class="card-header">
-                        <h3 class="card-title">Lista</h3>
+                        <h3 class="card-title">Listado</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <div id="tablaDatatable"></div>
+                                <div id="tablaDatatable">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -88,24 +88,63 @@
             </div>
         </section>
 
-        <div class="modal fade" id="modalAgregar">
-            <div class="modal-dialog">
+        <!-- modal editar -->
+        <div class="modal fade" id="modalEditar">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Nuevo Rol</h4>
+                        <h4 class="modal-title">Editar Registro</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="formulario-nuevo">
+                        <form id="formulario-editar">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-12">
 
                                         <div class="form-group">
-                                            <label>Nombre</label>
-                                            <input type="text" autocomplete="off" maxlength="30" class="form-control" id="nombre-nuevo" placeholder="Nombre">
+                                            <input type="hidden" id="id-editar">
+                                        </div>
+
+                                        <div class="form-group" style="width: 30%">
+                                            <label>Fecha <span style="color: red">*</span></label>
+                                            <input type="date" class="form-control" id="fechahora-nuevo">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Tipo Incidente</label>
+                                            <input type="text" maxlength="3000" class="form-control" id="tipo-nuevo"
+                                                   placeholder="Tipo de Incidente">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Sistema Afectado</label>
+                                            <input type="text" maxlength="3000" class="form-control" id="sistema-nuevo"
+                                                   placeholder="sistema Afectado">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Nivel: <span style="color: red">*</span></label>
+                                            <br>
+                                            <select width="100%" class="form-control" id="select-nivel">
+                                                <option value="1">Ordinarios</option>
+                                                <option value="2">Relevantes</option>
+                                                <option value="3">Críticos</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Medida Correctivas</label>
+                                            <input type="text" maxlength="3000" class="form-control" id="medida-nuevo"
+                                                   placeholder="Medidas Correctivas">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Observaciones</label>
+                                            <input type="text" maxlength="3000" class="form-control"
+                                                   id="observacion-nuevo" placeholder="Observaciones">
                                         </div>
 
                                     </div>
@@ -115,64 +154,36 @@
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-success" onclick="agregarRol()">Agregar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="modalBorrar">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Borrar Rol Global</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                        <button type="button"
+                                style="font-weight: bold; background-color: #28a745; color: white !important;"
+                                id="btn-guardar" class="btn btn-success btn-sm"
+                                onclick="editar()">Actualizar
                         </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="formulario-borrar">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-
-                                        <p>Esta acción eliminara el Rol con todos sus Permisos.</p>
-
-                                        <div class="form-group">
-                                            <input type="hidden" id="idborrar">
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer justify-content-between">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-danger" onclick="borrar()">Borrar</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-
-
 @stop
-
 
 
 @section('js')
     <script src="{{ asset('js/toastr.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/axios.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/alertaPersonalizada.js') }}"></script>
-
+    <script src="{{ asset('js/select2.min.js') }}" type="text/javascript"></script>
     <script>
-        $(document).ready(function () {
-            const ruta = "{{ url('/admin/roles/tabla') }}";
+        $(function () {
+            const ruta = "{{ url('/admin/ticket-incidencias/tabla') }}";
 
-            $('#tablaDatatable').load(ruta, function () {
-                // Inicializar DataTable cuando el HTML ya está en el DOM
+            function initDataTable() {
+                // Si ya hay instancia, destrúyela antes de re-crear
+                if ($.fn.DataTable.isDataTable('#tabla')) {
+                    $('#tabla').DataTable().destroy();
+                }
+
+                // Inicializa
                 $('#tabla').DataTable({
                     paging: true,
                     lengthChange: true,
@@ -182,132 +193,85 @@
                     autoWidth: false,
                     responsive: true,
                     pagingType: "full_numbers",
-                    lengthMenu: [[10, 25, 50, 100, 150, -1],[10, 25, 50, 100, 150, "Todo"]],
+                    lengthMenu: [[100, 150, -1], [100, 150, "Todo"]],
                     language: {
                         sProcessing: "Procesando...",
                         sLengthMenu: "Mostrar _MENU_ registros",
                         sZeroRecords: "No se encontraron resultados",
                         sEmptyTable: "Ningún dato disponible en esta tabla",
-                        sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                        sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
-                        sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+                        sInfo: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                        sInfoEmpty: "Mostrando 0 a 0 de 0 registros",
+                        sInfoFiltered: "(filtrado de _MAX_ registros)",
                         sSearch: "Buscar:",
-                        oPaginate: { sFirst: "Primero", sLast: "Último", sNext: "Siguiente", sPrevious: "Anterior" },
-                        oAria: { sSortAscending: ": Activar para ordenar ascendente", sSortDescending: ": Activar para ordenar descendente" }
+                        oPaginate: {sFirst: "Primero", sLast: "Último", sNext: "Siguiente", sPrevious: "Anterior"},
+                        oAria: {sSortAscending: ": Orden ascendente", sSortDescending: ": Orden descendente"}
                     },
-
-                    // 👇 Esto coloca "Mostrar" a la IZQ y "Buscar" a la DER
                     dom:
                         "<'row align-items-center'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 text-md-right'f>>" +
                         "tr" +
                         "<'row align-items-center'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
                 });
 
-                // Opcional: inputs compactos y bonitos
+                // Estilitos
                 $('#tabla_length select').addClass('form-control form-control-sm');
-                $('#tabla_filter input').addClass('form-control form-control-sm').css('display','inline-block');
-            });
+                $('#tabla_filter input').addClass('form-control form-control-sm').css('display', 'inline-block');
+            }
 
+            function cargarTabla() {
+                $('#tablaDatatable').load(ruta, function () {
+                    // AQUI debe existir exactamente un <table id="tabla"> en la parcial
+                    initDataTable();
+                });
+            }
+
+            // Primera carga
+            cargarTabla();
+
+            // Exponer recarga para tus flujos (crear/editar)
+            window.recargar = function () {
+                cargarTabla();
+            };
         });
     </script>
 
-
     <script>
 
-        function verInformacion(id){
-            window.location.href="{{ url('/admin/roles/lista/permisos') }}/"+id;
+        function recargar() {
+            var ruta = "{{ URL::to('/admin/ticket-incidencias/tabla') }}";
+            $('#tablaDatatable').load(ruta);
         }
 
-        // ver todos los permisos que existen
-        function vistaPermisos(){
-            window.location.href="{{ url('/admin/roles/permisos/lista') }}";
-        }
-
-        function modalAgregar(){
+        function modalAgregar() {
             document.getElementById("formulario-nuevo").reset();
             $('#modalAgregar').modal('show');
         }
 
-        function modalBorrar(id){
-            // se obtiene el id del Rol a eliminar globalmente
+        function informacion(id) {
+            openLoading();
+            document.getElementById("formulario-editar").reset();
 
-            $('#idborrar').val(id);
-            $('#modalBorrar').modal('show');
-        }
-
-        function borrar(){
-            openLoading()
-            // se envia el ID del Rol
-            var idrol = document.getElementById('idborrar').value;
-
-            var formData = new FormData();
-            formData.append('idrol', idrol);
-
-            axios.post(urlAdmin+'/admin/roles/borrar-global', formData, {
+            axios.post(urlAdmin + '/admin/ticket-incidencias/solucionado', {
+                'id': id
             })
                 .then((response) => {
-                    closeLoading()
-                    $('#modalBorrar').modal('hide');
+                    closeLoading();
+                    if (response.data.success === 1) {
 
-                    if(response.data.success === 1){
-                        toastr.success('Rol global eliminado');
-                        recargar();
-                    }else{
-                        toastr.error('Error al eliminar');
+                        toastr.success('Actualizado');
+                        recargar()
+
+                    } else {
+                        toastr.error('Información no encontrada');
                     }
                 })
                 .catch((error) => {
                     closeLoading();
-                    toastr.error('Error al eliminar');
+                    toastr.error('Información no encontrada');
                 });
         }
 
-        function agregarRol(){
-            var nombre = document.getElementById('nombre-nuevo').value;
 
-            if(nombre === ''){
-                toastr.error('Nombre es requerido')
-                return;
-            }
-
-            if(nombre.length > 30){
-                toastr.error('Máximo 30 caracteres para Nombre')
-                return;
-            }
-
-            openLoading()
-            var formData = new FormData();
-            formData.append('nombre', nombre);
-
-            axios.post(urlAdmin+'/admin/permisos/nuevo-rol', formData, {
-            })
-                .then((response) => {
-                    closeLoading()
-
-                    if (response.data.success === 1) {
-                        toastr.error('Rol Repetido', 'Cambiar de nombre');
-                    }
-                    else if(response.data.success === 2){
-                        $('#modalAgregar').modal('hide');
-                        recargar();
-                    }
-                    else {
-                        toastr.error('Error al guardar');
-                    }
-                })
-                .catch((error) => {
-                    closeLoading()
-                    toastr.error('Error al guardar');
-                });
-        }
-
-        function recargar(){
-            var ruta = "{{ url('/admin/roles/tabla') }}";
-            $('#tablaDatatable').load(ruta);
-        }
     </script>
-
-
 
     <script>
         (function () {
@@ -365,7 +329,7 @@
 
                 try {
                     saving = true;
-                    await axios.post(urlAdmin+'/admin/actualizar/tema', { tema: newValue });
+                    await axios.post(urlAdmin + '/admin/actualizar/tema', {tema: newValue});
                     // Si querés, mostrar un toast:
                     if (window.toastr) toastr.success('Tema actualizado');
                 } catch (err) {
@@ -383,5 +347,5 @@
         })();
     </script>
 
-
 @endsection
+

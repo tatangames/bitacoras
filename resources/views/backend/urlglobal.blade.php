@@ -1,5 +1,5 @@
 <!-- URL GLOBAL PETICIONES POST          /bitacorasuti.com           -->
-<script type="text/javascript"> var urlAdmin = ""; </script>
+<script type="text/javascript"> var urlAdmin = "/bitacorasuti.com"; </script>
 
 
 <!-- ICONO GLOBAL DE LAS PESTAÑAS -->

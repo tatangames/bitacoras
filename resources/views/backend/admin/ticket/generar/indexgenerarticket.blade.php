@@ -81,33 +81,8 @@
                                                placeholder="Tipo de Incidente">
                                     </div>
 
-                                    <div class="form-group">
-                                        <label>Sistema Afectado</label>
-                                        <input type="text" maxlength="3000" class="form-control" id="sistema-nuevo"
-                                               placeholder="sistema Afectado">
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label>Nivel: <span style="color: red">*</span></label>
-                                        <br>
-                                        <select width="100%" class="form-control" id="select-nivel">
-                                            <option value="1">Ordinarios</option>
-                                            <option value="2">Relevantes</option>
-                                            <option value="3">Críticos</option>
-                                        </select>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label>Medida Correctivas</label>
-                                        <input type="text" maxlength="3000" class="form-control" id="medida-nuevo"
-                                               placeholder="Medidas Correctivas">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Observaciones</label>
-                                        <input type="text" maxlength="3000" class="form-control" id="observacion-nuevo"
-                                               placeholder="Observaciones">
-                                    </div>
 
                                 </div>
 
@@ -138,10 +113,6 @@
 
                     var fecha = document.getElementById('fecha-nuevo').value;
                     var tipo = document.getElementById('tipo-nuevo').value;
-                    var sistema = document.getElementById('sistema-nuevo').value;
-                    var nivel = document.getElementById('select-nivel').value;
-                    var medida = document.getElementById('medida-nuevo').value;
-                    var observacion = document.getElementById('observacion-nuevo').value;
 
                     if(fecha === ''){
                         toastr.error('Fecha es requerida');
@@ -158,10 +129,6 @@
                     var formData = new FormData();
                     formData.append('fecha', fecha);
                     formData.append('tipo', tipo);
-                    formData.append('sistema', sistema);
-                    formData.append('nivel', nivel);
-                    formData.append('medida', medida);
-                    formData.append('observacion', observacion);
 
                     axios.post(urlAdmin + '/admin/ticket/registro', formData)
                         .then((response) => {

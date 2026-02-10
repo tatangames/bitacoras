@@ -414,8 +414,21 @@ return [
         ],
 
 
+        [
+            'text'  => 'Ticket Pendientes',
+            'icon'  => 'fas fa-file-alt',
+            'route' => 'admin.ticket.pendiente.index',
+            'can'   => 'ticket.sidebar',
+        ],
 
 
+
+        [
+            'text'  => 'Incidencias Por Revisar',
+            'icon'  => 'fas fa-file-alt',
+            'route' => 'admin.ticket.incidencias.porrevisar.index',
+            'can'   => 'editor.sidebar.dashboard',
+        ],
 
 
 
