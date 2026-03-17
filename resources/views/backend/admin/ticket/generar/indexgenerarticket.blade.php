@@ -62,7 +62,7 @@
                     <div class="col-md-6">
                         <div class="card card-gray-dark">
                             <div class="card-header">
-                                <h3 class="card-title">Incide ddddncias</h3>
+                                <h3 class="card-title">Incidencias</h3>
                             </div>
                             <form id="form-nuevo">
                                 <div class="card-body">
