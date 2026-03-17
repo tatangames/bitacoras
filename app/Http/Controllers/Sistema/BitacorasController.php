@@ -92,8 +92,7 @@ class BitacorasController extends Controller
 
         $idusuario = Auth::id();
 
-        $arrayBitacoraNovedadesAcceso = BitacorasAcceso::where('id_usuario', $idusuario)
-            ->orderBy('fecha', 'ASC')->get()
+        $arrayBitacoraNovedadesAcceso = BitacorasAcceso::orderBy('fecha', 'ASC')->get()
             ->map(function ($item) {
 
                 // Crear campo formateado
@@ -231,8 +230,7 @@ class BitacorasController extends Controller
     {
         $idusuario = Auth::id();
 
-        $arrayBitacoraMantenimiento = BitacorasMantenimiento::where('id_usuario', $idusuario)
-            ->orderBy('fecha', 'ASC')->get()
+        $arrayBitacoraMantenimiento = BitacorasMantenimiento::orderBy('fecha', 'ASC')->get()
             ->map(function ($item) {
 
                 // Crear campo formateado
@@ -385,8 +383,7 @@ class BitacorasController extends Controller
     {
         $idusuario = Auth::id();
 
-        $arrayBitacoraIncidencias = BitacorasIncidencias::where('id_usuario', $idusuario)
-            ->where('estado', 1) // SOLO COMPLETADAS
+        $arrayBitacoraIncidencias = BitacorasIncidencias::where('estado', 1) // SOLO COMPLETADAS
             ->orderBy('fecha', 'ASC')->get()
             ->map(function ($item) {
 
@@ -533,8 +530,7 @@ class BitacorasController extends Controller
     {
         $idusuario = Auth::id();
 
-        $arrayBitacoraSoporte = BitacorasSoporte::where('id_usuario', $idusuario)
-            ->orderBy('fecha', 'ASC')->get()
+        $arrayBitacoraSoporte = BitacorasSoporte::orderBy('fecha', 'ASC')->get()
             ->map(function ($item) {
 
                 // Crear campo formateado
