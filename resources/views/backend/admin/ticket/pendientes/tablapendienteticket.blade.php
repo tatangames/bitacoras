@@ -1,9 +1,9 @@
 <table id="tabla" class="table table-bordered table-striped">
     <thead>
     <tr>
-        <th  style="width: 4%">Fecha</th>
-        <th  style="width: 12%">Tipo Incidente</th>
-        <th  style="width: 5%">Opciones</th>
+        <th  style="width: 3%">Fecha</th>
+        <th  style="width: 3%">Fecha Registrado</th>
+        <th  style="width: 15%">Tipo Incidente</th>
     </tr>
     </thead>
     <tbody>
@@ -14,15 +14,10 @@
                 {{ $dato->fechaFormat }}
             </td>
             <td>
-                {{ $dato->tipo_incidente }}
+                {{ $dato->fechaRegistrado }}
             </td>
-
             <td>
-                <button type="button"
-                        class="btn btn-success btn-xs"
-                        onclick="informacion({{ $dato->id }})">
-                    <i class="fas fa-edit" title="Solucionado"></i>&nbsp; Solucionado
-                </button>
+                {{ $dato->tipo_incidente }}
             </td>
         </tr>
     @endforeach

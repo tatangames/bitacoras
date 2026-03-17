@@ -386,6 +386,7 @@ class BitacorasController extends Controller
         $idusuario = Auth::id();
 
         $arrayBitacoraIncidencias = BitacorasIncidencias::where('id_usuario', $idusuario)
+            ->where('estado', 0)
             ->orderBy('fecha', 'ASC')->get()
             ->map(function ($item) {
 

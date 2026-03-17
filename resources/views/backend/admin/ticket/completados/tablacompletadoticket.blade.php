@@ -60,6 +60,13 @@
                     <i class="fas fa-edit" title="Editar"></i>&nbsp; Editar
                 </button>
 
+                <button type="button"
+                        style="margin: 2px"
+                        class="btn btn-danger btn-xs"
+                        onclick="infoCompletar({{ $dato->id }})">
+                    <i class="fas fa-edit" title="Finalizar"></i>&nbsp; Finalizar
+                </button>
+
             </td>
         </tr>
     @endforeach

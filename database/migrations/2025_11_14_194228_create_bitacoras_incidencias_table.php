@@ -26,10 +26,8 @@ return new class extends Migration
             $table->text('observaciones')->nullable();
 
             // 0: pendiente
-            // 1: solucionado por usuario
-            // 2: revisado por administrador
+            // 1: finalizado
             $table->boolean('estado');
-
         });
     }
 

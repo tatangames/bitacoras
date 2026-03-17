@@ -340,6 +340,30 @@
         }
 
 
+        function infoCompletar(id){
+
+            openLoading();
+            var formData = new FormData();
+            formData.append('id', id);
+
+            axios.post(urlAdmin + '/admin/ticket-incidencias/completar', formData)
+                .then((response) => {
+                    closeLoading();
+                    if (response.data.success === 1) {
+                        toastr.success('Actualizado correctamente');
+                        recargar()
+                    } else {
+                        toastr.error('Error al registrar');
+                    }
+                })
+                .catch((error) => {
+                    toastr.error('Error al registrar');
+                    closeLoading();
+                })
+
+        }
+
+
 
     </script>
 

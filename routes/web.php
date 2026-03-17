@@ -119,6 +119,7 @@ Route::post('/admin/ticket-incidencias/solucionado', [TicketController::class,'s
 Route::get('/admin/ticket/incidencias-porrevisar/index', [TicketController::class,'indexTicketPendientePorRevisar'])->name('admin.ticket.incidencias.porrevisar.index');
 Route::get('/admin/ticket-incidencias-porrevisar/tabla', [TicketController::class,'tablaTicketPendientePorRevisar']);
 Route::post('/admin/ticket-incidencias/actualizar/porrevisar', [TicketController::class,'revisadoTicketCompletado']);
+Route::post('/admin/ticket-incidencias/completar', [TicketController::class,'completarRevisionTicket']);
 
 
 

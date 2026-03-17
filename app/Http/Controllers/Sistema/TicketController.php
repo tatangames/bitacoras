@@ -47,8 +47,8 @@ class TicketController extends Controller
             $dato->fecha_registro = $fechaActual;
             $dato->fecha = $request->fecha;
             $dato->tipo_incidente = $request->tipo;
-            $dato->estado = 0;
             $dato->nivel = 1;
+            $dato->estado = 0;
             $dato->save();
 
             DB::commit();
@@ -74,10 +74,14 @@ class TicketController extends Controller
         $idusuario = Auth::id();
 
         $arrayBitacoraIncidencias = BitacorasIncidencias::where('id_usuario', $idusuario)
+            ->where('estado', 0)
             ->orderBy('fecha', 'ASC')
-            ->where('estado', 0) // pendientes
             ->get()
             ->map(function ($item) {
+
+                // Crear campo formateado
+                $item->fechaRegistrado = Carbon::parse($item->fecha_registro)->format('d/m/Y h:i A');
+
 
                 // Crear campo formateado
                 $item->fechaFormat = Carbon::parse($item->fecha)->format('d/m/Y');
@@ -121,7 +125,6 @@ class TicketController extends Controller
 
             BitacorasIncidencias::where('id', $request->id)->update([
                 'fecha_solucionado' => $fechaActual,
-                'estado' => 1, // solucionado por usuario
             ]);
 
             DB::commit();
@@ -145,8 +148,8 @@ class TicketController extends Controller
 
     public function tablaTicketPendientePorRevisar(Request $request)
     {
-        $arrayBitacoraIncidencias = BitacorasIncidencias::where('estado', 1)
-            ->orderBy('fecha', 'ASC')
+        $arrayBitacoraIncidencias = BitacorasIncidencias::orderBy('fecha', 'ASC')
+            ->where('estado', 0)
             ->get()
             ->map(function ($item) {
 
@@ -205,7 +208,6 @@ class TicketController extends Controller
                 'nivel' => $request->nivel,
                 'medida_correctivas' => $request->medida,
                 'observaciones' => $request->observacion,
-                'estado' => 2, // ya revisado y completado por administradores
             ]);
 
             DB::commit();
@@ -217,6 +219,34 @@ class TicketController extends Controller
         }
     }
 
+
+    public function completarRevisionTicket(Request $request)
+    {
+        $regla = array(
+            'id' => 'required',
+        );
+
+        $validar = Validator::make($request->all(), $regla);
+
+        if ($validar->fails()) {
+            return ['success' => 0];
+        }
+        DB::beginTransaction();
+
+        try {
+
+            BitacorasIncidencias::where('id', $request->id)->update([
+                'estado' => 1,
+            ]);
+
+            DB::commit();
+            return ['success' => 1];
+        } catch (\Throwable $e) {
+            Log::info('error ' . $e);
+            DB::rollback();
+            return ['success' => 99];
+        }
+    }
 
 
 
