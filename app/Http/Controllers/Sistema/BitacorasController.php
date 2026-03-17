@@ -104,6 +104,9 @@ class BitacorasController extends Controller
                     $item->nombreAcceso = "Entrada";
                 }
 
+                $infoUsuario = Administrador::where('id', $item->id_usuario)->first();
+                $item->nombreUsuario = $infoUsuario->nombre;
+
                 return $item;
             });
 
@@ -252,6 +255,9 @@ class BitacorasController extends Controller
                 else{
                     $item->estadoFormat = "Correctivo";
                 }
+
+                $infoUsuario = Administrador::where('id', $item->id_usuario)->first();
+                $item->nombreUsuario = $infoUsuario->nombre;
 
                 return $item;
             });
@@ -404,6 +410,9 @@ class BitacorasController extends Controller
 
                 $item->nivelFormat = $niveles[$item->nivel] ?? '';
 
+                $infoUsuario = Administrador::where('id', $item->id_usuario)->first();
+                $item->nombreUsuario = $infoUsuario->nombre;
+
                 return $item;
             });
 
@@ -544,6 +553,9 @@ class BitacorasController extends Controller
                 }else{
                     $item->estadoFormat = "Solucionado";
                 }
+
+                $infoUsuario = Administrador::where('id', $item->id_usuario)->first();
+                $item->nombreUsuario = $infoUsuario->nombre;
 
                 return $item;
             });

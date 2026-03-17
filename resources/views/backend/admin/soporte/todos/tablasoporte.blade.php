@@ -2,6 +2,7 @@
     <thead>
     <tr>
         <th  style="width: 12%">Fecha</th>
+        <th  style="width: 12%">Usuario</th>
         <th  style="width: 12%">Unidad</th>
         <th  style="width: 12%">Descripción</th>
         <th  style="width: 12%">Solución</th>
@@ -17,7 +18,9 @@
             <td data-order="{{ strtotime($dato->fecha) }}">
                 {{ $dato->fechaFormat }}
             </td>
-
+            <td>
+                {{ $dato->nombreUsuario }}
+            </td>
             <td>
                 {{ $dato->nombreUnidad }}
             </td>
