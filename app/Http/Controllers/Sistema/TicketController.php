@@ -256,5 +256,15 @@ class TicketController extends Controller
 
 
 
+    public function subscribe(Request $request)
+    {
+        auth()->user()->update([
+            'onesignal_player_id' => $request->player_id
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+
 
 }

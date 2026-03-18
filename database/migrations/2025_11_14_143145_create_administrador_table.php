@@ -22,6 +22,8 @@ return new class extends Migration
                 ->constrained('unidad')
                 ->cascadeOnDelete()
                 ->nullOnDelete();
+
+            $table->string('onesignal_player_id', 300)->nullable();
         });
     }
 

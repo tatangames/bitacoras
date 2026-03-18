@@ -122,6 +122,7 @@ Route::post('/admin/ticket-incidencias/modificar/estado', [TicketController::cla
 
 
 
+Route::post('/onesignal/subscribe', [TicketController::class, 'subscribe'])->middleware('auth');
 
 
 
