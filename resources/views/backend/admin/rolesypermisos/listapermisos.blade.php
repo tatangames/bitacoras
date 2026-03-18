@@ -16,8 +16,6 @@
 
     <link href="{{ asset('css/toastr.min.css') }}" type="text/css" rel="stylesheet" />
 
-
-
     <li class="nav-item dropdown">
         <a href="#" class="nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-cogs"></i>
@@ -300,80 +298,6 @@
     </script>
 
 
-
-    <script>
-        (function () {
-            // ===== Config inicial =====
-            const SERVER_DEFAULT = {{ $temaPredeterminado }}; // 0 = light, 1 = dark
-            const iconEl = document.getElementById('theme-icon');
-
-            // CSRF para axios
-            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            if (token) axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
-
-            // ===== Funciones =====
-            function applyTheme(mode) {
-                const dark = mode === 'dark';
-
-                // AdminLTE v3
-                document.body.classList.toggle('dark-mode', dark);
-
-                // AdminLTE v4
-                document.documentElement.setAttribute('data-bs-theme', dark ? 'dark' : 'light');
-
-                // Icono
-                if (iconEl) {
-                    iconEl.classList.remove('fa-sun', 'fa-moon');
-                    iconEl.classList.add(dark ? 'fa-moon' : 'fa-sun');
-                }
-            }
-
-            function themeToInt(mode) {
-                return mode === 'dark' ? 1 : 0;
-            }
-
-            function intToTheme(v) {
-                return v === 1 ? 'dark' : 'light';
-            }
-
-            // ===== Aplicar tema inicial desde servidor =====
-            applyTheme(intToTheme(SERVER_DEFAULT));
-
-            // ===== Manejo de clicks y POST a backend =====
-            let saving = false;
-
-            document.addEventListener('click', async (e) => {
-                const a = e.target.closest('.dropdown-item[data-theme]');
-                if (!a) return;
-                e.preventDefault();
-                if (saving) return;
-
-                const selectedMode = a.dataset.theme; // 'dark' | 'light'
-                const newValue = themeToInt(selectedMode);
-
-                // Modo optimista: aplicar de una vez
-                const previousMode = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light';
-                applyTheme(selectedMode);
-
-                try {
-                    saving = true;
-                    await axios.post(urlAdmin+'/admin/actualizar/tema', { tema: newValue });
-                    // Si querés, mostrar un toast:
-                    if (window.toastr) toastr.success('Tema actualizado');
-                } catch (err) {
-                    // Revertir si falló
-                    applyTheme(previousMode);
-                    if (window.toastr) {
-                        toastr.error('No se pudo actualizar el tema');
-                    } else {
-                        alert('No se pudo actualizar el tema');
-                    }
-                } finally {
-                    saving = false;
-                }
-            });
-        })();
-    </script>
 
 
 

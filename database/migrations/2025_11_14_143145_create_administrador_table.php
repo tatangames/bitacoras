@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('usuario', 100)->unique();
             $table->string('password', 255);
             $table->boolean('activo');
-            $table->boolean('tema');
 
             $table->foreignId('id_unidad')
                 ->constrained('unidad')

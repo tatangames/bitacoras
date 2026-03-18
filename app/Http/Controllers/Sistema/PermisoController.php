@@ -25,11 +25,10 @@ class PermisoController extends Controller
 
     public function index(){
         $roles = Role::all()->pluck('name', 'id');
-        $temaPredeterminado =  $this->getTemaPredeterminado();
 
         $arrayUnidad = Unidad::orderBy('nombre', 'ASC')->get();
 
-        return view('backend.admin.rolesypermisos.permisos', compact('roles', 'temaPredeterminado', 'arrayUnidad'));
+        return view('backend.admin.rolesypermisos.permisos', compact('roles',  'arrayUnidad'));
     }
 
     public function tablaUsuarios(){
@@ -41,9 +40,12 @@ class PermisoController extends Controller
                 return $item;
             });
 
+        $roles = Role::all()->pluck('name', 'id');         // ← agregar
+        $arrayUnidad = Unidad::orderBy('nombre', 'ASC')->get(); // ← agregar
 
-
-        return view('backend.admin.rolesypermisos.tabla.tablapermisos', compact('usuarios'));
+        return view('backend.admin.rolesypermisos.tabla.tablapermisos',
+            compact('usuarios', 'roles', 'arrayUnidad')  // ← agregar
+        );
     }
 
     public function nuevoUsuario(Request $request){
@@ -68,7 +70,6 @@ class PermisoController extends Controller
         $u->usuario  = $request->usuario;
         $u->password = bcrypt($request->password);
         $u->activo   = 1;
-        $u->tema     = 0;
         $u->id_unidad = $request->idunidad;
 
         if ($u->save()) {

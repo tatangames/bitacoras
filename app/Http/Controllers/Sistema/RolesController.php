@@ -15,15 +15,11 @@ class RolesController extends Controller
         $this->middleware('auth');
     }
 
-    private function getTemaPredeterminado(){
-        return Auth::guard('admin')->user()->tema;
-    }
 
     public function index(){
 
-        $temaPredeterminado =  $this->getTemaPredeterminado();
 
-        return view('backend.admin.rolesypermisos.roles', compact('temaPredeterminado'));
+        return view('backend.admin.rolesypermisos.roles');
     }
 
     public function tablaRoles(){
@@ -35,9 +31,8 @@ class RolesController extends Controller
         // obtener todos los permisos que existen
         $permisos = Permission::all()->sortBy('name')->pluck('name', 'id');
 
-        $temaPredeterminado =  $this->getTemaPredeterminado();
 
-        return view('backend.admin.rolesypermisos.rolespermisos', compact('id', 'permisos', 'temaPredeterminado'));
+        return view('backend.admin.rolesypermisos.rolespermisos', compact('id', 'permisos'));
     }
 
     public function tablaRolesPermisos($id){
@@ -81,9 +76,7 @@ class RolesController extends Controller
     }
 
     public function listaTodosPermisos(){
-        $temaPredeterminado =  $this->getTemaPredeterminado();
-
-        return view('backend.admin.rolesypermisos.listapermisos', compact('temaPredeterminado'));
+        return view('backend.admin.rolesypermisos.listapermisos');
     }
 
     public function tablaTodosPermisos(){

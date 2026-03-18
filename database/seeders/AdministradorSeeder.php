@@ -19,7 +19,6 @@ class AdministradorSeeder extends Seeder
             'password' => Hash::make('1234'),
             'usuario' => 'admin',
             'activo' => true,
-            'tema' => 0,
         ])->assignRole('admin');
 
         Administrador::create([
@@ -27,7 +26,6 @@ class AdministradorSeeder extends Seeder
             'password' => Hash::make('1234'),
             'usuario' => 'editor',
             'activo' => true,
-            'tema' => 0,
         ])->assignRole('editor');
     }
 }

@@ -16,14 +16,9 @@ class ConfiguracionController extends Controller
         $this->middleware('auth');
     }
 
-    private function getTemaPredeterminado(){
-        return Auth::guard('admin')->user()->tema;
-    }
-
     public function indexUnidad()
     {
-        $temaPredeterminado =  $this->getTemaPredeterminado();
-        return view('backend.admin.configuracion.unidad.vistaunidad', compact('temaPredeterminado'));
+        return view('backend.admin.configuracion.unidad.vistaunidad');
     }
 
     public function tablaUnidad()

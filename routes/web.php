@@ -45,9 +45,6 @@ Route::post('/admin/editar-perfil/actualizar', [PerfilController::class, 'editar
 
 Route::get('sin-permisos', [ControlController::class,'indexSinPermiso'])->name('no.permisos.index');
 
-// actualizar Tema
-Route::post('/admin/actualizar/tema', [ControlController::class, 'actualizarTema'])->name('admin.tema.update');
-
 
 
 

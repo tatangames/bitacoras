@@ -25,9 +25,11 @@ return new class extends Migration
             $table->text('medida_correctivas')->nullable();
             $table->text('observaciones')->nullable();
 
-            // 0: pendiente
-            // 1: finalizado
+            // 0: PENDIENTE
+            // 1: EN PROCESO
+            // 2: FINALIZADO
             $table->boolean('estado');
+
         });
     }
 

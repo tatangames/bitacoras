@@ -15,15 +15,10 @@ class PerfilController extends Controller
         $this->middleware('auth');
     }
 
-    private function getTemaPredeterminado(){
-        return Auth::guard('admin')->user()->tema;
-    }
-
     public function indexEditarPerfil(){
         $usuario = auth()->user();
-        $temaPredeterminado =  $this->getTemaPredeterminado();
 
-        return view('backend.admin.perfil.vistaperfil', compact('usuario', 'temaPredeterminado'));
+        return view('backend.admin.perfil.vistaperfil', compact('usuario'));
     }
 
     public function editarUsuario(Request $request){

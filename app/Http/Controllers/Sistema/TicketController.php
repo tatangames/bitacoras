@@ -20,16 +20,11 @@ class TicketController extends Controller
         $this->middleware('auth');
     }
 
-    private function getTemaPredeterminado(){
-        return Auth::guard('admin')->user()->tema;
-    }
-
 
     public function indexGenerarTicket()
     {
-        $temaPredeterminado =  $this->getTemaPredeterminado();
 
-        return view('backend.admin.ticket.generar.indexgenerarticket', compact('temaPredeterminado'));
+        return view('backend.admin.ticket.generar.indexgenerarticket');
     }
 
 
@@ -64,9 +59,7 @@ class TicketController extends Controller
 
     public function indexTicketPendiente()
     {
-        $temaPredeterminado =  $this->getTemaPredeterminado();
-
-        return view('backend.admin.ticket.pendientes.vistapendienteticket', compact('temaPredeterminado'));
+        return view('backend.admin.ticket.pendientes.vistapendienteticket');
     }
 
     public function tablaTicketPendiente()
@@ -140,9 +133,7 @@ class TicketController extends Controller
 
     public function indexTicketPendientePorRevisar()
     {
-        $temaPredeterminado =  $this->getTemaPredeterminado();
-
-        return view('backend.admin.ticket.completados.vistacompletadoticket', compact('temaPredeterminado'));
+        return view('backend.admin.ticket.completados.vistacompletadoticket');
     }
 
 

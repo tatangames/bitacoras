@@ -23,18 +23,13 @@ class BitacorasController extends Controller
         $this->middleware('auth');
     }
 
-    private function getTemaPredeterminado(){
-        return Auth::guard('admin')->user()->tema;
-    }
-
     public function registroNovedadesAcceso()
     {
         $arrayTipoAcceso = TipoAcceso::orderBy('id', 'ASC')->get();
         $fechaHora = Carbon::now('America/El_Salvador')->format('Y-m-d\TH:i');
-        $temaPredeterminado =  $this->getTemaPredeterminado();
 
         return view('backend.admin.novedadesyacceso.vistaregistronovedadesyacceso', compact( 'fechaHora',
-            'arrayTipoAcceso', 'temaPredeterminado'));
+            'arrayTipoAcceso'));
     }
 
     public function guardarNovedadesAcceso(Request $request)
@@ -83,8 +78,7 @@ class BitacorasController extends Controller
     {
         $idusuario = Auth::id();
         $infoUsuario = Administrador::where('id', $idusuario)->first();
-        $temaPredeterminado =  $this->getTemaPredeterminado();
-        return view('backend.admin.novedadesyacceso.todos.vistanovedadesyacceso', compact('infoUsuario', 'temaPredeterminado'));
+        return view('backend.admin.novedadesyacceso.todos.vistanovedadesyacceso', compact('infoUsuario'));
     }
 
     public function tablaBitacoraNovedadesAcceso()
@@ -175,8 +169,7 @@ class BitacorasController extends Controller
     public function registroBitacoraMantenimiento()
     {
         $fechaHora = Carbon::now('America/El_Salvador')->format('Y-m-d');
-        $temaPredeterminado =  $this->getTemaPredeterminado();
-        return view('backend.admin.mantenimiento.vistaregistromantenimiento', compact( 'fechaHora', 'temaPredeterminado'));
+        return view('backend.admin.mantenimiento.vistaregistromantenimiento', compact( 'fechaHora'));
     }
 
     public function guardarMantenimiento(Request $request)
@@ -218,15 +211,12 @@ class BitacorasController extends Controller
     }
 
 
-
-
     public function indexBitacoraMantenimiento()
     {
         $idusuario = Auth::id();
         $infoUsuario = Administrador::where('id', $idusuario)->first();
-        $temaPredeterminado =  $this->getTemaPredeterminado();
 
-        return view('backend.admin.mantenimiento.todos.vistamantenimiento', compact('infoUsuario', 'temaPredeterminado'));
+        return view('backend.admin.mantenimiento.todos.vistamantenimiento', compact('infoUsuario'));
     }
 
     public function tablaBitacoraMantenimiento()
@@ -277,9 +267,7 @@ class BitacorasController extends Controller
         if ($validar->fails()) {
             return ['success' => 0];
         }
-
         $info = BitacorasMantenimiento::where('id', $request->id)->first();
-
 
         return ['success' => 1, 'info' => $info];
     }
@@ -327,8 +315,7 @@ class BitacorasController extends Controller
     public function registroBitacoraIncidencias()
     {
         $fechaHora = Carbon::now('America/El_Salvador')->format('Y-m-d');
-        $temaPredeterminado =  $this->getTemaPredeterminado();
-        return view('backend.admin.incidencias.vistaregistroincidencias', compact('fechaHora', 'temaPredeterminado'));
+        return view('backend.admin.incidencias.vistaregistroincidencias', compact('fechaHora'));
     }
 
 
@@ -380,9 +367,8 @@ class BitacorasController extends Controller
     {
         $idusuario = Auth::id();
         $infoUsuario = Administrador::where('id', $idusuario)->first();
-        $temaPredeterminado =  $this->getTemaPredeterminado();
 
-        return view('backend.admin.incidencias.todos.vistaincidencias', compact('infoUsuario', 'temaPredeterminado'));
+        return view('backend.admin.incidencias.todos.vistaincidencias', compact('infoUsuario'));
     }
 
     public function tablaBitacoraIncidencias()
@@ -481,9 +467,8 @@ class BitacorasController extends Controller
     {
         $arrayUnidad = Unidad::orderBy('nombre', 'ASC')->get();
         $fechaHora = Carbon::now('America/El_Salvador')->format('Y-m-d');
-        $temaPredeterminado =  $this->getTemaPredeterminado();
 
-        return view('backend.admin.soporte.vistaregistrosoporte', compact( 'fechaHora', 'arrayUnidad', 'temaPredeterminado'));
+        return view('backend.admin.soporte.vistaregistrosoporte', compact( 'fechaHora', 'arrayUnidad'));
     }
 
     public function guardarSoporte(Request $request)
@@ -530,9 +515,8 @@ class BitacorasController extends Controller
     {
         $idusuario = Auth::id();
         $infoUsuario = Administrador::where('id', $idusuario)->first();
-        $temaPredeterminado =  $this->getTemaPredeterminado();
 
-        return view('backend.admin.soporte.todos.vistasoporte', compact('infoUsuario', 'temaPredeterminado'));
+        return view('backend.admin.soporte.todos.vistasoporte', compact('infoUsuario'));
     }
 
     public function tablaBitacoraSoporte()
@@ -624,9 +608,8 @@ class BitacorasController extends Controller
     //***************************************************************
     public function vistaReportesTodos()
     {
-        $temaPredeterminado =  $this->getTemaPredeterminado();
 
-        return view('backend.admin.reportes.vistareportetodos', compact('temaPredeterminado'));
+        return view('backend.admin.reportes.vistareportetodos');
     }
 
 
@@ -643,9 +626,6 @@ class BitacorasController extends Controller
         $hasta = $request->hasta;
         $desdeFormateado = $desde ? date('d/m/Y', strtotime($desde)) : '';
         $hastaFormateado = $hasta ? date('d/m/Y', strtotime($hasta)) : '';
-
-
-
 
         switch ($tipo) {
 
