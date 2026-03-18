@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Sistema;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\AlertaTicketJob;
+use App\Mail\AlertaTicketMail;
 use App\Models\Administrador;
 use App\Models\BitacorasIncidencias;
 use App\Models\Unidad;
@@ -11,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class TicketController extends Controller
@@ -28,13 +31,20 @@ class TicketController extends Controller
     }
 
 
-    public function generarTicket(Request $request){
 
+
+    // ENVIO DE CORREO Y NOTIFICACIONES PUSH EN BACKGROUND PARA ALERTAS
+
+
+    public function generarTicket(Request $request)
+    {
         DB::beginTransaction();
 
         try {
-
             $userId = auth()->id();
+            $infoUsuario = Administrador::with('unidad')->findOrFail($userId);
+            $nombreUnidad = $infoUsuario->unidad?->nombre ?? '';
+
             $fechaActual = Carbon::now('America/El_Salvador');
 
             $dato = new BitacorasIncidencias();
@@ -47,7 +57,11 @@ class TicketController extends Controller
             $dato->save();
 
             DB::commit();
+
+
+
             return ['success' => 1];
+
         } catch (\Throwable $e) {
             Log::info('error ' . $e);
             DB::rollback();

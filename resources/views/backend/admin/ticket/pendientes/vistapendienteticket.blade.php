@@ -161,6 +161,8 @@
     <script src="{{ asset('js/alertaPersonalizada.js') }}"></script>
     <script src="{{ asset('js/select2.min.js') }}" type="text/javascript"></script>
     <script>
+
+
         $(function () {
             const ruta = "{{ url('/admin/ticket-incidencias/tabla') }}";
 

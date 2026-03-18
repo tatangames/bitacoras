@@ -44,18 +44,23 @@
 
     <div id="divcontenedor">
 
-        <section class="content-header">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item">Bitacoras</li>
-                        <li class="breadcrumb-item active">Listado de Incidencias</li>
-                    </ol>
-                </div>
+
+        <div id="refresh-timer-bar" style="display:flex;align-items:center;gap:12px;padding:8px 14px;background:#f4f6f9;border-radius:6px;font-size:13px;color:#6c757d;width:fit-content;margin-bottom:10px;">
+            <i class="fas fa-clock"></i>
+            <span>Auto-actualizar en</span>
+            <strong id="timer-label">30s</strong>
+            <div style="width:120px;height:4px;background:#dee2e6;border-radius:2px;overflow:hidden;">
+                <div id="progress-fill" style="height:100%;background:#28a745;border-radius:2px;width:100%;transition:width 1s linear;"></div>
             </div>
-        </section>
+            <select id="interval-select" class="form-control form-control-sm" style="width:auto;">
+                <option value="30">30 seg</option>
+                <option value="60">1 min</option>
+                <option value="120">2 min</option>
+                <option value="300">5 min</option>
+            </select>
+            <button id="btn-pause" class="btn btn-sm btn-outline-secondary">Pausar</button>
+            <small id="last-refresh" class="text-muted"></small>
+        </div>
 
         <section class="content">
             <div class="container-fluid">
@@ -74,6 +79,7 @@
                 </div>
             </div>
         </section>
+
 
         <!-- modal editar -->
         <div class="modal fade" id="modalEditar">
@@ -163,6 +169,56 @@
     <script src="{{ asset('js/alertaPersonalizada.js') }}"></script>
     <script src="{{ asset('js/select2.min.js') }}" type="text/javascript"></script>
     <script>
+
+        (function () {
+            let total = 30, remaining = 30, paused = false, intervalId;
+            const fill   = document.getElementById('progress-fill');
+            const label  = document.getElementById('timer-label');
+            const btn    = document.getElementById('btn-pause');
+            const sel    = document.getElementById('interval-select');
+            const lastEl = document.getElementById('last-refresh');
+
+            function fmt(s) {
+                return s >= 60 ? Math.floor(s / 60) + 'm ' + (s % 60) + 's' : s + 's';
+            }
+            function updateLast() {
+                const d = new Date();
+                lastEl.textContent = 'Últ: ' + d.toLocaleTimeString();
+            }
+            function reset() {
+                remaining = total;
+                fill.style.width = '100%';
+                label.textContent = fmt(total);
+            }
+            function tick() {
+                if (paused) return;
+                remaining--;
+                label.textContent = fmt(remaining);
+                fill.style.width = Math.round((remaining / total) * 100) + '%';
+                if (remaining <= 0) {
+                    recargar();          // llama tu función existente
+                    updateLast();
+                    reset();
+                }
+            }
+
+            btn.addEventListener('click', function () {
+                paused = !paused;
+                btn.textContent = paused ? 'Reanudar' : 'Pausar';
+                fill.style.background = paused ? '#6c757d' : '#28a745';
+            });
+
+            sel.addEventListener('change', function () {
+                total = parseInt(sel.value);
+                reset();
+            });
+
+            setInterval(tick, 1000);
+        })();
+
+
+
+
         $(function () {
             const ruta = "{{ url('/admin/ticket-incidencias-porrevisar/tabla') }}";
 
