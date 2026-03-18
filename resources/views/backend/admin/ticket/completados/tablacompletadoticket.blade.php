@@ -3,6 +3,7 @@
     <tr>
         <th  style="width: 12%">Fecha</th>
         <th  style="width: 12%">Unidad</th>
+        <th  style="width: 5%">Estado</th>
         <th  style="width: 12%">Tipo Incidente</th>
         <th  style="width: 12%">Sistema Afectado</th>
         <th  style="width: 12%">Nivel</th>
@@ -20,6 +21,17 @@
             </td>
             <td>
                 {{ $dato->nombreUnidad }}
+            </td>
+            <td>
+                @php
+                    $badges = [
+                        0 => ['color' => 'warning',  'label' => 'Pendiente'],
+                        1 => ['color' => 'primary',  'label' => 'En Proceso'],
+                        2 => ['color' => 'success',  'label' => 'Completado'],
+                    ];
+                    $badge = $badges[$dato->estado] ?? ['color' => 'secondary', 'label' => 'Desconocido'];
+                @endphp
+                <span class="badge bg-{{ $badge['color'] }}">{{ $badge['label'] }}</span>
             </td>
             <td>
                 {{ $dato->tipo_incidente }}
@@ -60,13 +72,21 @@
                     <i class="fas fa-edit" title="Editar"></i>&nbsp; Editar
                 </button>
 
-                <button type="button"
-                        style="margin: 2px"
-                        class="btn btn-danger btn-xs"
-                        onclick="infoCompletar({{ $dato->id }})">
-                    <i class="fas fa-edit" title="Finalizar"></i>&nbsp; Finalizar
-                </button>
-
+                @if($dato->estado == 0)
+                    <button type="button"
+                            style="margin: 3px"
+                            class="btn btn-success btn-xs"
+                            onclick="infoEstadoEnProceso({{ $dato->id }})">
+                        <i class="fas fa-edit" title="En Proceso"></i>&nbsp; En Proceso
+                    </button>
+                @elseif($dato->estado == 1)
+                    <button type="button"
+                            style="margin: 3px"
+                            class="btn btn-danger btn-xs"
+                            onclick="infoEstadoEnCompletado({{ $dato->id }})">
+                        <i class="fas fa-edit" title="Completado"></i>&nbsp; Completado
+                    </button>
+                @endif
             </td>
         </tr>
     @endforeach

@@ -71,7 +71,8 @@ Route::get('/admin/registro/mantenimiento/index', [BitacorasController::class,'r
 Route::post('/admin/bitacora-mantenimiento/registro', [BitacorasController::class,'guardarMantenimiento']);
 
 Route::get('/admin/bitacora/lista/mantenimiento/index', [BitacorasController::class,'indexBitacoraMantenimiento'])->name('admin.listado.mantenimientos');
-Route::get('/admin/bitacora/lista/mantenimiento/tabla', [BitacorasController::class,'tablaBitacoraMantenimiento']);
+Route::post('/admin/bitacora/lista/mantenimiento/tabla', [BitacorasController::class,'tablaBitacoraMantenimiento']);
+
 Route::post('/admin/bitacora/mantenimiento/informacion', [BitacorasController::class,'informacionMantenimiento']);
 Route::post('/admin/bitacora/mantenimiento/actualizar', [BitacorasController::class,'actualizarMantenimiento']);
 
@@ -92,7 +93,8 @@ Route::get('/admin/registro/soporte/index', [BitacorasController::class,'registr
 Route::post('/admin/bitacora-soporte/registro', [BitacorasController::class,'guardarSoporte']);
 
 Route::get('/admin/bitacora/lista/soporte/index', [BitacorasController::class,'indexBitacoraSoporte'])->name('admin.listado.soporte');
-Route::get('/admin/bitacora/lista/soporte/tabla', [BitacorasController::class,'tablaBitacoraSoporte']);
+Route::post('/admin/bitacora/lista/soporte/tabla', [BitacorasController::class, 'tablaBitacoraSoporte']);
+
 Route::post('/admin/bitacora/soporte/informacion', [BitacorasController::class,'informacionSoporte']);
 Route::post('/admin/bitacora/soporte/actualizar', [BitacorasController::class,'actualizarSoporte']);
 
@@ -116,7 +118,7 @@ Route::post('/admin/ticket-incidencias/solucionado', [TicketController::class,'s
 Route::get('/admin/ticket/incidencias-porrevisar/index', [TicketController::class,'indexTicketPendientePorRevisar'])->name('admin.ticket.incidencias.porrevisar.index');
 Route::get('/admin/ticket-incidencias-porrevisar/tabla', [TicketController::class,'tablaTicketPendientePorRevisar']);
 Route::post('/admin/ticket-incidencias/actualizar/porrevisar', [TicketController::class,'revisadoTicketCompletado']);
-Route::post('/admin/ticket-incidencias/completar', [TicketController::class,'completarRevisionTicket']);
+Route::post('/admin/ticket-incidencias/modificar/estado', [TicketController::class,'completarRevisionTicket']);
 
 
 

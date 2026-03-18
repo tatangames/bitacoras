@@ -140,7 +140,7 @@ class TicketController extends Controller
     public function tablaTicketPendientePorRevisar(Request $request)
     {
         $arrayBitacoraIncidencias = BitacorasIncidencias::orderBy('fecha', 'ASC')
-            ->where('estado', 0)
+            ->whereIn('estado', [0,1]) // PENDIENTE Y EN PROCESO
             ->get()
             ->map(function ($item) {
 
@@ -215,6 +215,7 @@ class TicketController extends Controller
     {
         $regla = array(
             'id' => 'required',
+            'estado' => 'required',
         );
 
         $validar = Validator::make($request->all(), $regla);
@@ -227,7 +228,7 @@ class TicketController extends Controller
         try {
 
             BitacorasIncidencias::where('id', $request->id)->update([
-                'estado' => 1,
+                'estado' => $request->estado,
             ]);
 
             DB::commit();

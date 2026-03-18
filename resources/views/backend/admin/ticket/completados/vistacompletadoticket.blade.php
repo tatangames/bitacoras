@@ -134,6 +134,7 @@
                                                    id="observacion-nuevo" placeholder="Observaciones">
                                         </div>
 
+
                                     </div>
                                 </div>
                             </div>
@@ -327,13 +328,13 @@
         }
 
 
-        function infoCompletar(id){
-
+        function infoEstadoEnProceso(id){
             openLoading();
             var formData = new FormData();
             formData.append('id', id);
+            formData.append('estado', '1');
 
-            axios.post(urlAdmin + '/admin/ticket-incidencias/completar', formData)
+            axios.post(urlAdmin + '/admin/ticket-incidencias/modificar/estado', formData)
                 .then((response) => {
                     closeLoading();
                     if (response.data.success === 1) {
@@ -347,7 +348,28 @@
                     toastr.error('Error al registrar');
                     closeLoading();
                 })
+        }
 
+        function infoEstadoEnCompletado(id){
+            openLoading();
+            var formData = new FormData();
+            formData.append('id', id);
+            formData.append('estado', '2');
+
+            axios.post(urlAdmin + '/admin/ticket-incidencias/modificar/estado', formData)
+                .then((response) => {
+                    closeLoading();
+                    if (response.data.success === 1) {
+                        toastr.success('Actualizado correctamente');
+                        recargar()
+                    } else {
+                        toastr.error('Error al registrar');
+                    }
+                })
+                .catch((error) => {
+                    toastr.error('Error al registrar');
+                    closeLoading();
+                })
         }
 
 

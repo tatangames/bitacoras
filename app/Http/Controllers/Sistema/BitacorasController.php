@@ -219,38 +219,39 @@ class BitacorasController extends Controller
         return view('backend.admin.mantenimiento.todos.vistamantenimiento', compact('infoUsuario'));
     }
 
-    public function tablaBitacoraMantenimiento()
+
+    public function tablaBitacoraMantenimiento(Request $request)
     {
-        $idusuario = Auth::id();
+        $query = BitacorasMantenimiento::orderBy('fecha', 'ASC');
 
-        $arrayBitacoraMantenimiento = BitacorasMantenimiento::orderBy('fecha', 'ASC')->get()
-            ->map(function ($item) {
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate('fecha', '>=', $request->fecha_desde);
+        }
 
-                // Crear campo formateado
-                $item->fechaFormat = Carbon::parse($item->fecha)->format('d/m/Y');
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate('fecha', '<=', $request->fecha_hasta);
+        }
 
-                $fechaProximo = "";
-                if($item->proximo_mantenimiento != null){
-                    $fechaProximo = Carbon::parse($item->proximo_mantenimiento)->format('d/m/Y');
-                }
-                $item->fechaProximo = $fechaProximo;
+        if ($request->filled('tipo_mantenimiento')) {
+            $query->where('tipo_mantenimiento', $request->tipo_mantenimiento);
+        }
 
+        $arrayBitacoraMantenimiento = $query->get()->map(function ($item) {
 
-                if($item->tipo_mantenimiento == '1'){
-                    $item->estadoFormat = "Actualización";
-                }
-                else if($item->tipo_mantenimiento == '2'){
-                    $item->estadoFormat = "Preventivo";
-                }
-                else{
-                    $item->estadoFormat = "Correctivo";
-                }
+            $item->fechaFormat = Carbon::parse($item->fecha)->format('d/m/Y');
 
-                $infoUsuario = Administrador::where('id', $item->id_usuario)->first();
-                $item->nombreUsuario = $infoUsuario->nombre;
+            $item->fechaProximo = $item->proximo_mantenimiento
+                ? Carbon::parse($item->proximo_mantenimiento)->format('d/m/Y')
+                : '';
 
-                return $item;
-            });
+            $tipos = ['1' => 'Actualización', '2' => 'Preventivo', '3' => 'Correctivo'];
+            $item->estadoFormat = $tipos[$item->tipo_mantenimiento] ?? 'Desconocido';
+
+            $infoUsuario = Administrador::where('id', $item->id_usuario)->first();
+            $item->nombreUsuario = $infoUsuario->nombre;
+
+            return $item;
+        });
 
         return view('backend.admin.mantenimiento.todos.tablamantenimiento', compact('arrayBitacoraMantenimiento'));
     }
@@ -347,7 +348,7 @@ class BitacorasController extends Controller
             $dato->nivel = $request->nivel; // criticos, relevantes, ordinarios
             $dato->medida_correctivas = $request->medida;
             $dato->observaciones = $request->observacion;
-            $dato->estado = 1; // REGISTRADO MANUAL - COMPLETADO
+            $dato->estado = 2; // REGISTRADO MANUAL - COMPLETADO
             $dato->save();
 
             DB::commit();
@@ -375,7 +376,7 @@ class BitacorasController extends Controller
     {
         $idusuario = Auth::id();
 
-        $arrayBitacoraIncidencias = BitacorasIncidencias::where('estado', 1) // SOLO COMPLETADAS
+        $arrayBitacoraIncidencias = BitacorasIncidencias::where('estado', 2) // SOLO COMPLETADAS
             ->orderBy('fecha', 'ASC')->get()
             ->map(function ($item) {
 
@@ -515,34 +516,44 @@ class BitacorasController extends Controller
     {
         $idusuario = Auth::id();
         $infoUsuario = Administrador::where('id', $idusuario)->first();
+        $arrayUnidades = Unidad::orderBy('nombre', 'ASC')->get();
 
-        return view('backend.admin.soporte.todos.vistasoporte', compact('infoUsuario'));
+        return view('backend.admin.soporte.todos.vistasoporte', compact('infoUsuario', 'arrayUnidades'));
     }
 
-    public function tablaBitacoraSoporte()
+    public function tablaBitacoraSoporte(Request $request)
     {
-        $idusuario = Auth::id();
+        $query = BitacorasSoporte::orderBy('fecha', 'ASC');
 
-        $arrayBitacoraSoporte = BitacorasSoporte::orderBy('fecha', 'ASC')->get()
-            ->map(function ($item) {
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate('fecha', '>=', $request->fecha_desde);
+        }
 
-                // Crear campo formateado
-                $item->fechaFormat = Carbon::parse($item->fecha)->format('d/m/Y');
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate('fecha', '<=', $request->fecha_hasta);
+        }
 
-                $infoUnidad = Unidad::where('id', $item->id_unidad)->first();
-                $item->nombreUnidad = $infoUnidad->nombre;
+        if ($request->filled('unidad')) {
+            $query->where('id_unidad', $request->unidad);
+        }
 
-                if($item->estado == '1'){
-                    $item->estadoFormat = "Pendiente";
-                }else{
-                    $item->estadoFormat = "Solucionado";
-                }
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
 
-                $infoUsuario = Administrador::where('id', $item->id_usuario)->first();
-                $item->nombreUsuario = $infoUsuario->nombre;
+        $arrayBitacoraSoporte = $query->get()->map(function ($item) {
+            $item->fechaFormat = Carbon::parse($item->fecha)->format('d/m/Y');
 
-                return $item;
-            });
+            $infoUnidad = Unidad::where('id', $item->id_unidad)->first();
+            $item->nombreUnidad = $infoUnidad->nombre;
+
+            $item->estadoFormat = $item->estado == 1 ? 'Pendiente' : 'Solucionado';
+
+            $infoUsuario = Administrador::where('id', $item->id_usuario)->first();
+            $item->nombreUsuario = $infoUsuario->nombre;
+
+            return $item;
+        });
 
         return view('backend.admin.soporte.todos.tablasoporte', compact('arrayBitacoraSoporte'));
     }
@@ -697,7 +708,7 @@ class BitacorasController extends Controller
                 $registros = DB::table('bitacoras_incidencias as b')
                     ->join('administrador as a', 'a.id', '=', 'b.id_usuario')
                     ->whereBetween('b.fecha', [$desde, $hasta])
-                    ->where('b.estado', 1) // ya completado info por admin
+                    ->where('b.estado', 2) // SOLO COMPLETADOS
                     ->select(
                         'b.fecha',
                         'a.nombre as usuario',
