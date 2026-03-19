@@ -106,6 +106,11 @@
                         return;
                     }
 
+                    if(tipo === ''){
+                        toastr.error('Incidente es requerida');
+                        return;
+                    }
+
                     const btnGuardar = document.getElementById('btn-guardar');
 
                     // Desactivar botón al iniciar

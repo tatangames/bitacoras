@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ApiNotificacion;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('prueba-noti',  [ApiNotificacion::class, 'enviarNotificacion']);
+Route::get('lista/ticket-pendientes',  [ApiNotificacion::class, 'listaTicketPendientes']);
+
