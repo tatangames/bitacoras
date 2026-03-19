@@ -30,6 +30,12 @@ return new class extends Migration
             // 2: FINALIZADO
             $table->boolean('estado');
 
+            // QUIEN PRESIONO EL BOTON "EN PROCESO"
+
+            $table->bigInteger('id_usuario_enproceso')->nullable();
+            $table->dateTime('fecha_enproceso')->nullable();
+
+
         });
     }
 

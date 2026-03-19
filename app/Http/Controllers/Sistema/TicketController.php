@@ -253,9 +253,14 @@ class TicketController extends Controller
 
         try {
 
-            BitacorasIncidencias::where('id', $request->id)->update([
-                'estado' => $request->estado,
-            ]);
+            $idusuario = Auth::id();
+
+            if($request->estado == 1){ // EN PROCESO
+                BitacorasIncidencias::where('id', $request->id)->update([
+                    'fecha_enproceso' => Carbon::now('America/El_Salvador'),
+                    'id_usuario_enproceso' => $idusuario,
+                ]);
+            }
 
             DB::commit();
             return ['success' => 1];
