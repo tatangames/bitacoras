@@ -262,6 +262,10 @@ class TicketController extends Controller
                 ]);
             }
 
+            BitacorasIncidencias::where('id', $request->id)->update([
+                'estado' => $request->estado,
+            ]);
+
             DB::commit();
             return ['success' => 1];
         } catch (\Throwable $e) {
