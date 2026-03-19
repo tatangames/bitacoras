@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use App\Jobs\EnviarNotificacion;
+use OneSignal;
 
 class TicketController extends Controller
 {
@@ -58,10 +60,20 @@ class TicketController extends Controller
 
             DB::commit();
 
+            $tituloNoti = "Ticket  #" . $dato->id;
+            $mensajeNoti = $nombreUnidad;
 
+            // Obtener todos los tokens no nulos de la tabla Administrador
+            $tokens = Administrador::whereNotNull('onesignal_player_id')
+                ->where('onesignal_player_id', '!=', '')
+                ->pluck('onesignal_player_id')
+                ->toArray();
+
+            if (!empty($tokens)) {
+                dispatch(new EnviarNotificacion($tokens, $tituloNoti, $mensajeNoti));
+            }
 
             return ['success' => 1];
-
         } catch (\Throwable $e) {
             Log::info('error ' . $e);
             DB::rollback();
@@ -256,14 +268,6 @@ class TicketController extends Controller
 
 
 
-    public function subscribe(Request $request)
-    {
-        auth()->user()->update([
-            'onesignal_player_id' => $request->player_id
-        ]);
-
-        return response()->json(['success' => true]);
-    }
 
 
 

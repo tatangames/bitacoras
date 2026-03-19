@@ -18,46 +18,19 @@ class Administrador extends Authenticatable
 
     protected $guard_name = 'admin';
 
-
-
-
     public function unidad()
     {
         return $this->belongsTo(Unidad::class, 'id_unidad');
     }
 
-
-
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    /*protected $fillable = [
-        'name',
-        'email',
+    protected $fillable = [
+        'nombre',
+        'usuario',
         'password',
-    ];*/
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    /* protected $hidden = [
-         'password',
-         'remember_token',
-     ];*/
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    /*protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];*/
+        'activo',
+        'id_unidad',
+        'onesignal_player_id',
+    ];
 
 
 }

@@ -4,24 +4,31 @@ namespace App\Http\Controllers;
 
 use App\Models\Administrador;
 use App\Models\BitacorasIncidencias;
-use Illuminate\Http\Request;
 use App\Jobs\EnviarNotificacion;
 use Carbon\Carbon;
 use OneSignal;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
+
 class ApiNotificacion extends Controller
 {
 
 
     public function enviarNotificacion()
     {
-        $tokenUsuario = "b638983a-ad28-480e-b087-2096391f5860";
+
         $tituloNoti = "Enviado desde Laravel";
         $mensajeNoti = "Siii";
 
-        dispatch(new EnviarNotificacion($tokenUsuario, $tituloNoti, $mensajeNoti));
+        // Obtener todos los tokens no nulos de la tabla Administrador
+        $tokens = Administrador::whereNotNull('onesignal_player_id')
+            ->where('onesignal_player_id', '!=', '')
+            ->pluck('onesignal_player_id')
+            ->toArray();
+
+        if (empty($tokens)) {
+            return "No hay administradores con token registrado";
+        }
+
+        dispatch(new EnviarNotificacion($tokens, $tituloNoti, $mensajeNoti));
 
         return "enviado";
     }
