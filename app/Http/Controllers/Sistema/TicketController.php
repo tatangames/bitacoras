@@ -93,7 +93,7 @@ class TicketController extends Controller
         $idusuario = Auth::id();
 
         $arrayBitacoraIncidencias = BitacorasIncidencias::where('id_usuario', $idusuario)
-            ->where('estado', 0)
+            ->whereIn('estado', [0,1]) // PENDIENTE Y EN PROCESO
             ->orderBy('fecha', 'ASC')
             ->get()
             ->map(function ($item) {
