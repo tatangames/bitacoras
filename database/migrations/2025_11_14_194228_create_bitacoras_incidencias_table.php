@@ -36,6 +36,7 @@ return new class extends Migration
             $table->dateTime('fecha_enproceso')->nullable();
 
 
+            $table->string('documento', 100)->nullable();
         });
     }
 

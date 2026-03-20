@@ -14,8 +14,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Jobs\EnviarNotificacion;
+use Illuminate\Support\Str;
 use OneSignal;
 
 class TicketController extends Controller
@@ -43,44 +45,63 @@ class TicketController extends Controller
         DB::beginTransaction();
 
         try {
-            $userId = auth()->id();
+            $userId      = auth()->id();
             $infoUsuario = Administrador::with('unidad')->findOrFail($userId);
             $nombreUnidad = $infoUsuario->unidad?->nombre ?? '';
+            $fechaActual  = Carbon::now('America/El_Salvador');
 
-            $fechaActual = Carbon::now('America/El_Salvador');
+            // ── Guardar el ticket (con o sin documento) ──────────────────────
+            $dato                  = new BitacorasIncidencias();
+            $dato->id_usuario      = $userId;
+            $dato->fecha_registro  = $fechaActual;
+            $dato->fecha           = $request->fecha;
+            $dato->tipo_incidente  = $request->tipo;
+            $dato->nivel           = 1;
+            $dato->estado          = 0;
+            $dato->documento       = null; // default sin archivo
 
-            $dato = new BitacorasIncidencias();
-            $dato->id_usuario = $userId;
-            $dato->fecha_registro = $fechaActual;
-            $dato->fecha = $request->fecha;
-            $dato->tipo_incidente = $request->tipo;
-            $dato->nivel = 1;
-            $dato->estado = 0;
+            // ── Documento es OPCIONAL ────────────────────────────────────────
+            if ($request->hasFile('documento') && $request->file('documento')->isValid()) {
+
+                $cadena      = Str::random(15);
+                $tiempo      = microtime();
+                $nombre      = str_replace(' ', '_', $cadena . $tiempo);
+                $extension   = strtolower('.' . $request->documento->getClientOriginalExtension());
+                $nomDocumento = $nombre . $extension;
+
+                Storage::disk('archivos')->put(
+                    $nomDocumento,
+                    \File::get($request->file('documento'))
+                );
+
+                $dato->documento = $nomDocumento;
+            }
+
             $dato->save();
 
             DB::commit();
 
-            $tituloNoti = "Ticket  #" . $dato->id;
+            // ── Notificaciones push ──────────────────────────────────────────
+            $tituloNoti  = "Ticket #" . $dato->id;
             $mensajeNoti = $nombreUnidad;
 
-            // Obtener todos los tokens no nulos de la tabla Administrador
             $tokens = Administrador::whereNotNull('onesignal_player_id')
                 ->where('onesignal_player_id', '!=', '')
                 ->pluck('onesignal_player_id')
                 ->toArray();
 
             if (!empty($tokens)) {
-                dispatch(new EnviarNotificacion($tokens, $tituloNoti, $mensajeNoti));
+                 dispatch(new EnviarNotificacion($tokens, $tituloNoti, $mensajeNoti));
             }
 
             return ['success' => 1];
+
         } catch (\Throwable $e) {
-            Log::info('error ' . $e);
-            DB::rollback();
+            DB::rollBack();
+            Log::error('generarTicket error: ' . $e->getMessage(), ['exception' => $e]);
             return ['success' => 99];
         }
     }
-
 
 
     public function indexTicketPendiente()
