@@ -89,7 +89,7 @@ class TicketController extends Controller
                 ->toArray();
 
             if (!empty($tokens)) {
-                 dispatch(new EnviarNotificacion($tokens, $tituloNoti, $mensajeNoti));
+                 //dispatch(new EnviarNotificacion($tokens, $tituloNoti, $mensajeNoti));
             }
 
             return ['success' => 1];
