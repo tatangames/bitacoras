@@ -60,6 +60,12 @@ class TicketController extends Controller
             $dato->estado          = 0;
             $dato->documento       = null; // default sin archivo
 
+            if ($request->hasFile('documento')) {
+                \Log::info('Archivo recibido: ' . $request->file('documento')->getSize() . ' bytes');
+            } else {
+                \Log::info('No llegó archivo. MAX POST: ' . ini_get('post_max_size'));
+            }
+
             // ── Documento es OPCIONAL ────────────────────────────────────────
             if ($request->hasFile('documento') && $request->file('documento')->isValid()) {
 
