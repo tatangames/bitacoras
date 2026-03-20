@@ -69,10 +69,8 @@ class TicketController extends Controller
                 $extension   = strtolower('.' . $request->documento->getClientOriginalExtension());
                 $nomDocumento = $nombre . $extension;
 
-                Storage::disk('archivos')->put(
-                    $nomDocumento,
-                    \File::get($request->file('documento'))
-                );
+                Storage::disk('archivos')->putFileAs('', $request->file('documento'), $nomDocumento);
+
 
                 $dato->documento = $nomDocumento;
             }
