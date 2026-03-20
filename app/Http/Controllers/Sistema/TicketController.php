@@ -60,11 +60,11 @@ class TicketController extends Controller
             $dato->estado          = 0;
             $dato->documento       = null; // default sin archivo
 
-            if ($request->hasFile('documento')) {
+            /*if ($request->hasFile('documento')) {
                 \Log::info('Archivo recibido: ' . $request->file('documento')->getSize() . ' bytes');
             } else {
                 \Log::info('No llegó archivo. MAX POST: ' . ini_get('post_max_size'));
-            }
+            }*/
 
             // ── Documento es OPCIONAL ────────────────────────────────────────
             if ($request->hasFile('documento') && $request->file('documento')->isValid()) {
@@ -75,11 +75,11 @@ class TicketController extends Controller
                 $extension    = strtolower('.' . $request->documento->getClientOriginalExtension());
                 $nomDocumento = $nombre . $extension;
 
-                $t = microtime(true); // ✅ ANTES de guardar
+                //$t = microtime(true); // ✅ ANTES de guardar
 
                 Storage::disk('archivos')->putFileAs('', $request->file('documento'), $nomDocumento);
 
-                \Log::info('Tiempo guardado archivo: ' . round(microtime(true) - $t, 2) . 's'); // ✅ DESPUÉS
+                //\Log::info('Tiempo guardado archivo: ' . round(microtime(true) - $t, 2) . 's'); // ✅ DESPUÉS
 
                 $dato->documento = $nomDocumento;
             }
@@ -98,7 +98,7 @@ class TicketController extends Controller
                 ->toArray();
 
             if (!empty($tokens)) {
-                 //dispatch(new EnviarNotificacion($tokens, $tituloNoti, $mensajeNoti));
+                 dispatch(new EnviarNotificacion($tokens, $tituloNoti, $mensajeNoti));
             }
 
             return ['success' => 1];
