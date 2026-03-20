@@ -63,14 +63,17 @@ class TicketController extends Controller
             // ── Documento es OPCIONAL ────────────────────────────────────────
             if ($request->hasFile('documento') && $request->file('documento')->isValid()) {
 
-                $cadena      = Str::random(15);
-                $tiempo      = microtime();
-                $nombre      = str_replace(' ', '_', $cadena . $tiempo);
-                $extension   = strtolower('.' . $request->documento->getClientOriginalExtension());
+                $cadena       = Str::random(15);
+                $tiempo       = microtime();
+                $nombre       = str_replace(' ', '_', $cadena . $tiempo);
+                $extension    = strtolower('.' . $request->documento->getClientOriginalExtension());
                 $nomDocumento = $nombre . $extension;
+
+                $t = microtime(true); // ✅ ANTES de guardar
 
                 Storage::disk('archivos')->putFileAs('', $request->file('documento'), $nomDocumento);
 
+                \Log::info('Tiempo guardado archivo: ' . round(microtime(true) - $t, 2) . 's'); // ✅ DESPUÉS
 
                 $dato->documento = $nomDocumento;
             }
