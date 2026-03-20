@@ -131,7 +131,7 @@
 
                                     {{-- Fecha --}}
                                     <div class="form-group">
-                                        <label>Fecha</label>
+                                        <label>Fecha <span style="color: red">*</span></label>
                                         <input type="date"
                                                class="form-control"
                                                id="fecha-nuevo"
@@ -140,7 +140,7 @@
 
                                     {{-- Tipo de Incidente --}}
                                     <div class="form-group">
-                                        <label>Tipo Incidente</label>
+                                        <label>Tipo Incidente <span style="color: red">*</span></label>
                                         <input type="text"
                                                maxlength="3000"
                                                class="form-control"
